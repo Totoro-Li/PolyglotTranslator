@@ -77,7 +77,7 @@ local moduleExports = {}
 local versionInfo = {
     major = 1,
     minor = 0,
-    patch = 2
+    patch = 3
 }
 local mainGitHubPath = "/Totoro-Li/PolyglotTranslator/main/"
 local mainFileName = "PolyglotTranslator.lua"
@@ -114,7 +114,6 @@ local function isUpdateNeeded(currentVersion, newVersion)
     return false
 end
 local updateInProgress = false
-local updateActionRef
 
 function moduleExports.runUpdater(clickType)
     if updateInProgress then
@@ -130,13 +129,11 @@ function moduleExports.runUpdater(clickType)
             end
             if isUpdateNeeded(versionInfo, newVersionInfo) then
                 updateInProgress = true
-                menu.set_menu_name(updateActionRef, LOC.updating)
                 polyglotUtils.toast(LOC.updating)
                 local scriptFile = io.open(filesystem.scripts_dir() .. mainFileName, "wb")
                 if not scriptFile then
                     polyglotUtils.toast(LOC.unexpectedResponse)
                     updateInProgress = false
-                    menu.set_menu_name(updateActionRef, LOC.checkForUpdates)
                     return
                 end
                 scriptFile:write(resBody .. "\n")
@@ -547,7 +544,7 @@ package.preload['src.lib.localization'] = (function (...)
 						return t;
 					end
 				-- package.loaded["src.lib.localization"] = nil
-local engTranslations  = {
+local engTranslations = {
 	noInternetAccess = "To use Polyglot Translator, please enable internet access",
 	checkForUpdates = "Check for updates",
 	checkForUpdatesD = "Check for updates for Polyglot Translator",
@@ -576,15 +573,14 @@ local engTranslations  = {
 	frequencyPenaltyD =
 	"Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim. (Default: 0)",
 
-
 	translatorListenerOn = "Translator Listener On",
 	translatorListenerOnD = "Translator will listen to incoming messages and translate",
-	translateYourself = "Translate Yourself",
+	translateYourself = "Translate Own Messages",
 	translateYourselfD = "Translate messages sent by yourself",
 	translatedMessageDisplay = "Translated Message Display",
 	translatedMessageDisplayD = "Location of translated Message. You need to click to apply change",
-	colorSettingsForTranslation = "Color Settings For Translation",
-	colorSettingsForTranslationD = "Only works for team chat with sfchat display",
+	scriptSettings = "Other Settings For Polyglot Translator",
+	scriptSettingsD = "Including color settings and updates",
 	playerNameColor = "Player Name Color",
 	customLabelForTeamTranslationD = "Leaving it blank will revert it to the original label",
 	customLabelForAllTranslationD = "Leaving it blank will revert it to the original label",
@@ -604,7 +600,7 @@ local engTranslations  = {
 	sendMessage = "Send Message",
 	sendMessageD = "Input the text for your message",
 	inputMessage = "Please input your message",
-	translatedMsgLocationOptions ={
+	translatedMsgLocationOptions = {
 		teamChatNotNetworked = "Team Chat not networked",
 		teamChatNetworked = "Team Chat networked",
 		globalChatNotNetworked = "Global Chat not networked",
@@ -621,88 +617,165 @@ local engTranslations  = {
 		selectedColor = "Selected color: {arg1}",
 		customLabelForTeamTranslation = "Custom Label For [{arg1}] Translation",
 		customLabelForAllTranslation = "Custom Label For [{arg1}] Translation"
-
 	}
-
 }
 
-local zhTranslations = {
-    noInternetAccess = "要使用 Polyglot Translator，请启用互联网访问",
-    checkForUpdates = "检查更新",
-    checkForUpdatesD = "检查 Polyglot Translator 的更新",
-    updateInProgress = "更新进行中...",
-    updating = "更新中...",
-    failedToUpdate = "无法更新脚本文件。",
-    noUpdatesAvailable = "没有可用更新。",
-    chatGPTSettings = "ChatGPT 设置",
-    chatGPTSettingsD = "ChatGPT 设置",
-    apiKeyInput = "API 密钥",
-    apiKeyInputD = "输入您的 API 密钥",
-    chatGPTPromptPreset = "ChatGPT 提示预设",
-    chatGPTPromptPresetD = "选择 ChatGPT 的提示预设",
-    temperature = "温度",
-    temperatureD =
-    "在 0 到 2 之间选择采样温度。较高的值（如 0.8）会使输出更随机，而较低的值（如 0.2）会使其更集中和确定性。我们通常建议更改此或顶部 p，但不要同时更改。 (默认值: 1)",
-    topP = "Top P",
-    topPD =
-    "0 到 1 之间的数字。采样温度的替代方法，称为核采样，其中模型考虑具有最高 P 概率质量的令牌的结果。这样，0.1 就表示只考虑构成前 10% 概率质量的令牌。我们通常建议更改此或温度，但不要同时更改。 (默认值: 1)",
-    presencePenalty = "存在惩罚",
-    presencePenaltyD =
-    "介于 -2.0 和 2.0 之间的数字。正值会根据它们在迄今为止的文本中的出现情况对新令牌进行惩罚，从而增加模型谈论新主题的可能性。 (默认值: 0)",
-    frequencyPenalty = "频率惩罚",
-    frequencyPenaltyD =
-    "介于 -2.0 和 2.0 之间的数字。正值会根据它们在迄今为止的文本中的现有频率对新令牌进行惩罚，从而降低模型重复相同行的可能性。 (默认值: 0)",
+local frTranslations  = {
+	noInternetAccess = "Pour utiliser Polyglot Translator, veuillez activer l'accès à Internet",
+	checkForUpdates = "Vérifier les mises à jour",
+	checkForUpdatesD = "Vérifier les mises à jour pour Polyglot Translator",
+	updateInProgress = "Mise à jour en cours...",
+	updating = "Mise à jour...",
+	failedToUpdate = "Échec de la mise à jour du fichier de script.",
+	unexpectedResponse = "Fichier de mise à jour inattendu. Le fichier local restera inchangé.",
+	failedToDownloadFromGitHub = "Échec du téléchargement depuis GitHub.",
+	noUpdatesAvailable = "Aucune mise à jour disponible.",
+	chatGPTSettings = "Paramètres ChatGPT",
+	chatGPTSettingsD = "Paramètres ChatGPT",
+	apiKeyInput = "Clé API",
+	apiKeyInputD = "Entrez votre clé API",
+	chatGPTPromptPreset = "Préréglage de l'invite ChatGPT",
+	chatGPTPromptPresetD = "Choisissez le préréglage d'invite pour ChatGPT",
+	temperature = "Température",
+	temperatureD =
+	"Quelle température d'échantillonnage utiliser, entre 0 et 2. Des valeurs plus élevées comme 0,8 rendront la sortie plus aléatoire, tandis que des valeurs plus faibles comme 0,2 la rendront plus concentrée et déterministe. Nous recommandons généralement de modifier cela ou top p mais pas les deux. (Par défaut : 1)",
+	topP = "Top P",
+	topPD =
+	"Nombre entre 0 et 1. Une alternative à l'échantillonnage avec température, appelée échantillonnage du noyau, où le modèle prend en compte les résultats des jetons avec une masse de probabilité top p. Donc 0,1 signifie que seuls les jetons représentant les 10 % supérieurs de la masse de probabilité sont pris en compte. Nous recommandons généralement de modifier cela ou la température, mais pas les deux. (Par défaut : 1)",
+	presencePenalty = "Pénalité de présence",
+	presencePenaltyD =
+	"Nombre entre -2,0 et 2,0. Les valeurs positives pénalisent les nouveaux jetons en fonction de leur apparition dans le texte jusqu'à présent, augmentant la probabilité que le modèle parle de nouveaux sujets. (Par défaut : 0)",
+	frequencyPenalty = "Pénalité de fréquence",
+	frequencyPenaltyD =
+	"Nombre entre -2,0 et 2,0. Les valeurs positives pénalisent les nouveaux jetons en fonction de leur fréquence existante dans le texte jusqu'à présent, diminuant la probabilité que le modèle répète la même ligne mot pour mot. (Par défaut : 0)",
 
-    translatorListenerOn = "翻译监听器已开启",
-    translatorListenerOnD = "翻译器将监听传入的消息并进行翻译",
-    translateYourself = "翻译自己",
-	translateYourselfD = "翻译自己发送的消息",
-    translatedMessageDisplay = "翻译后的消息显示",
-    translatedMessageDisplayD = "翻译后的消息位置。您需要单击以应用更改",
-    colorSettingsForTranslation = "翻译颜色设置",
-    colorSettingsForTranslationD = "仅适用于具有 sfchat 显示的团队聊天",
-    playerNameColor = "玩家名称颜色",
-    customLabelForTeamTranslationD = "将其留空将恢复为原始标签",
-    customLabelForAllTranslationD = "将其留空将恢复为原始标签",
-    translatorListenerBlacklist = "翻译监听器黑名单",
-    translatorListenerBlacklistD = "忽略此列表中已开启语言的消息",
-    translationMethod = "翻译方法",
-    translationMethodD = "选择翻译方法",
-    incomingMessages = "传入消息",
-    incomingMessagesD = "为传入消息选择翻译方法",
-    outgoingMessages = "发出消息",
-    outgoingMessagesD = "为发出消息选择翻译方法",
-    targetLanguageIncoming = "传入消息的目标语言",
-    targetLanguageIncomingD = "您需要单击以应用更改",
-    sendTranslatedMessage = "发送翻译后的消息",
-    targetLanguageOutgoing = "发出消息的目标语言",
-    targetLanguageOutgoingD = "您发送的消息的最终语言。您需要单击以应用更改",
-    sendMessage = "发送消息",
-    sendMessageD = "输入您要发送的消息文本",
-    inputMessage = "请输入您的消息",
-	translatedMsgLocationOptions ={
+	translatorListenerOn = "Écouteur de traducteur activé",
+	translatorListenerOnD = "Le traducteur écoutera les messages entrants et les traduira",
+	translateYourself = "Traduire ses propres messages",
+	translateYourselfD = "Traduire les messages envoyés par vous-même",
+	translatedMessageDisplay = "Affichage du message traduit",
+	translatedMessageDisplayD = "Emplacement du message traduit. Vous devez cliquer pour appliquer le changement",
+	scriptSettings = "Autres paramètres pour Polyglot Translator",
+	scriptSettingsD = "Y compris les paramètres de couleur et les mises à jour",
+	playerNameColor = "Couleur du nom du joueur",
+	customLabelForTeamTranslationD = "Le laisser vide le rétablira à l'étiquette d'origine",
+	customLabelForAllTranslationD = "Le laisser vide le rétablira à l'étiquette d'origine",
+	translatorListenerBlacklist = "Liste noire de l'écouteur de traducteur",
+	translatorListenerBlacklistD = "Ignorer les messages dans les langues activées dans cette liste",
+	translationMethod = "Méthode de traduction",
+	translationMethodD = "Choisissez la méthode de traduction",
+	incomingMessages = "Messages entrants",
+	incomingMessagesD = "Choisissez la méthode de traduction pour les messages entrants",
+	outgoingMessages = "Messages sortants",
+	outgoingMessagesD = "Choisissez la méthode de traduction pour les messages sortants",
+	targetLanguageIncoming = "Langue cible pour les messages entrants",
+	targetLanguageIncomingD = "Vous devez cliquer pour appliquer le changement",
+	sendTranslatedMessage = "Envoyer le message traduit",
+	targetLanguageOutgoing = "Langue cible pour les messages sortants",
+	targetLanguageOutgoingD =
+	"Langue finale des messages que vous envoyez. Vous devez cliquer pour appliquer le changement",
+	sendMessage = "Envoyer le message",
+	sendMessageD = "Saisissez le texte de votre message",
+	inputMessage = "Veuillez saisir votre message",
+	translatedMsgLocationOptions = {
+		teamChatNotNetworked = "Chat d'équipe non connecté",
+		teamChatNetworked = "Chat d'équipe connecté",
+		globalChatNotNetworked = "Chat global non connecté",
+		globalChatNetworked = "Chat global connecté",
+		notification = "Stand Notification"
+	},
+	templates = {
+		-- Exemple: "Préréglage de l'invite ChatGPT changé en {arg1} "
+		updateSuccessful = "Mise à jour réussie, version actuelle : {arg1}",
+		apiKeyNotSet = "Clé API non définie. Veuillez entrer votre clé API dans les paramètres",
+		errorTranslating = "Erreur de traduction, message original : {arg1}, code d'état : {arg2}",
+		errorConnectingToChatGPTAPI = "Erreur de connexion à l'API ChatGPT",
+		chatGPTPromptChangedTo = "Préréglage de l'invite ChatGPT changé en {arg1}",
+		selectedColor = "Couleur sélectionnée : {arg1}",
+		customLabelForTeamTranslation = "Étiquette personnalisée pour la traduction [{arg1}]",
+		customLabelForAllTranslation = "Étiquette personnalisée pour la traduction [{arg1}]"
+	}
+}
+
+local zhTranslations  = {
+	noInternetAccess = "要使用多语种翻译器，请启用互联网访问",
+	checkForUpdates = "检查更新",
+	checkForUpdatesD = "检查多语种翻译器的更新",
+	updateInProgress = "更新进行中...",
+	updating = "正在更新...",
+	failedToUpdate = "无法更新脚本文件。",
+	unexpectedResponse = "意外的更新文件。本地文件将保持不变。",
+	failedToDownloadFromGitHub = "无法从GitHub下载。",
+	noUpdatesAvailable = "没有可用的更新。",
+	chatGPTSettings = "ChatGPT 设置",
+	chatGPTSettingsD = "ChatGPT 设置",
+	apiKeyInput = "API 密钥",
+	apiKeyInputD = "输入您的 API 密钥",
+	chatGPTPromptPreset = "ChatGPT 提示预设",
+	chatGPTPromptPresetD = "为 ChatGPT 选择提示预设",
+	temperature = "温度",
+	temperatureD =
+	"使用的采样温度，介于 0 和 2 之间。较高的值（如 0.8）会使输出更随机，而较低的值（如 0.2）会使其更集中和确定性。我们通常建议更改此项或顶部 p，但不要同时更改两者。（默认值：1）",
+	topP = "Top P",
+	topPD =
+	"介于 0 和 1 之间的数字。与使用温度采样的替代方法，称为核采样，其中模型考虑具有最高 p 概率质量的标记结果。因此，0.1 意味着仅考虑包含最高 10% 概率质量的标记。我们通常建议更改此项或温度，但不要同时更改两者。（默认值：1）",
+	presencePenalty = "存在惩罚",
+	presencePenaltyD =
+	"介于 -2.0 和 2.0 之间的数字。正值会根据它们在迄今为止的文本中的出现情况对新标记进行惩罚，从而增加模型谈论新主题的可能性。（默认值：0）",
+	frequencyPenalty = "频率惩罚",
+	frequencyPenaltyD =
+	"介于 -2.0 和 2.0 之间的数字。正值会根据它们在迄今为止的文本中的频率对新标记进行惩罚，从而降低模型重复相同行的可能性。（默认值：0）",
+
+	translatorListenerOn = "翻译器监听器已开启",
+	translatorListenerOnD = "翻译器将监听传入的消息并进行翻译",
+	translateYourself = "翻译自己的消息",
+	translateYourselfD = "翻译您自己发送的消息",
+	translatedMessageDisplay = "已翻译消息显示",
+	translatedMessageDisplayD = "翻译后的消息位置。您需要点击以应用更改",
+	scriptSettings = "多语种翻译器的其他设置",
+	scriptSettingsD = "包括颜色设置和更新",
+	playerNameColor = "玩家名字颜色",
+	customLabelForTeamTranslationD = "将其留空将还原为原始标签",
+	customLabelForAllTranslationD = "将其留空将还原为原始标签",
+	translatorListenerBlacklist = "翻译器监听器黑名单",
+	translatorListenerBlacklistD = "在此列表中切换为开启的语言的消息将被忽略",
+	translationMethod = "翻译方法",
+	translationMethodD = "选择翻译方法",
+	incomingMessages = "传入的消息",
+	incomingMessagesD = "选择传入消息的翻译方法",
+	outgoingMessages = "发出的消息",
+	outgoingMessagesD = "选择发出消息的翻译方法",
+	targetLanguageIncoming = "传入消息的目标语言",
+	targetLanguageIncomingD = "您需要点击以应用更改",
+	sendTranslatedMessage = "发送翻译后的消息",
+	targetLanguageOutgoing = "发出消息的目标语言",
+	targetLanguageOutgoingD = "您发送的消息的最终语言。您需要点击以应用更改",
+	sendMessage = "发送消息",
+	sendMessageD = "输入您要发送的消息文本",
+	inputMessage = "请输入您的消息",
+	translatedMsgLocationOptions = {
 		teamChatNotNetworked = "团队聊天未联网",
-		teamChatNetworked = "团队聊天联网",
-		globalChatNotNetworked = "全局聊天未联网",
-		globalChatNetworked = "全局聊天联网",
+		teamChatNetworked = "团队聊天已联网",
+		globalChatNotNetworked = "全球聊天未联网",
+		globalChatNetworked = "全球聊天已联网",
 		notification = "Stand通知"
 	},
-    templates = {
-        -- Example: "ChatGPT Prompt Preset changed to {arg1} "
-        updateSuccessful = "更新成功，当前版本：{arg1}",
-        apiKeyNotSet = "API 密钥尚未设置。请在设置中输入您的 API 密钥",
-        errorTranslating = "翻译错误，原始消息：{arg1}，状态码：{arg2}",
-        errorConnectingToChatGPTAPI = "连接到 ChatGPT API 时出错",
-        chatGPTPromptChangedTo = "ChatGPT 提示预设更改为 {arg1}",
-        selectedColor = "选择的颜色：{arg1}",
-        customLabelForTeamTranslation = "团队 [{arg1}] 翻译的自定义标签",
-        customLabelForAllTranslation = "所有 [{arg1}] 翻译的自定义标签"
-    }
-
+	templates = {
+		-- 示例："ChatGPT 提示预设更改为 {arg1} "
+		updateSuccessful = "更新成功，当前版本：{arg1}",
+		apiKeyNotSet = "API 密钥未设置。请在设置中输入您的 API 密钥",
+		errorTranslating = "翻译错误，原始消息：{arg1}，状态代码：{arg2}",
+		errorConnectingToChatGPTAPI = "连接 ChatGPT API 错误",
+		chatGPTPromptChangedTo = "ChatGPT 提示预设更改为 {arg1}",
+		selectedColor = "已选择颜色：{arg1}",
+		customLabelForTeamTranslation = "自定义 [{arg1}] 翻译标签",
+		customLabelForAllTranslation = "自定义 [{arg1}] 翻译标签"
+	}
 }
-local languages        = { "en", "zh" }
-local translations     = {
+local languages       = { "en", "fr", "zh" }
+local translations    = {
 	en = engTranslations,
+	fr = frTranslations,
 	zh = zhTranslations
 }
 function merge(t1, t2)
@@ -864,8 +937,8 @@ local translatedMsgLocationMenu = menu.list_select(menu.my_root(), LOC.translate
     end)
 
 -- CommandRef|CommandUniqPtr menu.list(CommandRef parent, Label menu_name, table<any, string> command_names = {}, Label help_text = "", ?function on_click = nil, ?function on_back = nil, ?function on_active_list_update = nil)
-local settingTranslationMenu = menu.list(menu.my_root(), LOC.colorSettingsForTranslation, {},
-    LOC.colorSettingsForTranslationD)
+local settingTranslationMenu = menu.list(menu.my_root(), LOC.scriptSettings, {},
+    LOC.scriptSettingsD)
 local colorTranslation = menu.list(settingTranslationMenu, LOC.playerNameColor)
 menu.on_focus(colorTranslation, function()
     util.yield(50)
