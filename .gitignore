@@ -1,0 +1,6 @@
+.idea/
+.vscode/
+*.dll
+*.exe
+*.bin
+*.iml
