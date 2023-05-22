@@ -77,7 +77,7 @@ local moduleExports = {}
 local versionInfo = {
     major = 1,
     minor = 0,
-    patch = 1
+    patch = 2
 }
 local mainGitHubPath = "/Totoro-Li/PolyglotTranslator/main/"
 local mainFileName = "PolyglotTranslator.lua"
@@ -102,6 +102,8 @@ end
 
 local function isUpdateNeeded(currentVersion, newVersion)
     if not newVersion then return false end
+    util.log("Current version: " .. currentVersion.major .. "." .. currentVersion.minor .. "." .. currentVersion.patch)
+    util.log("New version: " .. newVersion.major .. "." .. newVersion.minor .. "." .. newVersion.patch)
 
     if newVersion.major > currentVersion.major or
         (newVersion.major == currentVersion.major and newVersion.minor > currentVersion.minor) or
