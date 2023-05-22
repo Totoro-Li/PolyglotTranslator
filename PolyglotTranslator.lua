@@ -77,9 +77,9 @@ local moduleExports = {}
 local versionInfo = {
     major = 1,
     minor = 0,
-    patch = 0
+    patch = 1
 }
-local mainGitHubPath = "https://raw.githubusercontent.com/Totoro-Li/PolyglotTranslator/main/"
+local mainGitHubPath = "/Totoro-Li/PolyglotTranslator/main/"
 local mainFileName = "PolyglotTranslator.lua"
 
 local function parseVersionInfo(content)
@@ -119,11 +119,11 @@ function moduleExports.runUpdater(clickType)
         polyglotUtils.toast(LOC.updateInProgress)
         return
     end
-    async_http.init(mainGitHubPath .. mainFileName, function(resBody, _, statusCode)
+    async_http.init("https://raw.githubusercontent.com", mainGitHubPath .. mainFileName, function(resBody, _, statusCode)
         if statusCode >= 200 and statusCode < 300 and resBody and resBody:len() > 0 then
             local newVersionInfo = parseVersionInfo(resBody)
             if not newVersionInfo then
-                polyglotUtils.toast(LOC.failedToUpdate)
+                polyglotUtils.toast(LOC.unexpectedResponse)
                 return
             end
             if isUpdateNeeded(versionInfo, newVersionInfo) then
@@ -132,7 +132,7 @@ function moduleExports.runUpdater(clickType)
                 polyglotUtils.toast(LOC.updating)
                 local scriptFile = io.open(filesystem.scripts_dir() .. mainFileName, "wb")
                 if not scriptFile then
-                    polyglotUtils.toast(LOC.failedToUpdate)
+                    polyglotUtils.toast(LOC.unexpectedResponse)
                     updateInProgress = false
                     menu.set_menu_name(updateActionRef, LOC.checkForUpdates)
                     return
@@ -148,7 +148,7 @@ function moduleExports.runUpdater(clickType)
             polyglotUtils.toast(LOC.failedToUpdate)
         end
     end, function()
-        polyglotUtils.toast(LOC.failedToUpdate)
+        polyglotUtils.toast(LOC.failedToDownloadFromGitHub)
     end)
     async_http.dispatch()
 end
@@ -552,6 +552,8 @@ local engTranslations  = {
 	updateInProgress = "Update in progress...",
 	updating = "Updating...",
 	failedToUpdate = "Failed to update the script file.",
+	unexpectedResponse = "Unexpected update file. Local file will stay unchanged.",
+	failedToDownloadFromGitHub = "Failed to download from GitHub.",
 	noUpdatesAvailable = "No updates available.",
 	chatGPTSettings = "ChatGPT Settings",
 	chatGPTSettingsD = "ChatGPT Settings",
