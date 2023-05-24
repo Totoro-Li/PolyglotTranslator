@@ -76,8 +76,8 @@ local polyglotUtils = require "src.lib.utils"
 local moduleExports = {}
 local versionInfo = {
     major = 1,
-    minor = 0,
-    patch = 3
+    minor = 1,
+    patch = 0
 }
 local mainGitHubPath = "/Totoro-Li/PolyglotTranslator/main/"
 local mainFileName = "PolyglotTranslator.lua"
@@ -592,11 +592,11 @@ local engTranslations = {
 	incomingMessagesD = "Choose the translation method for incoming messages",
 	outgoingMessages = "Outgoing Messages",
 	outgoingMessagesD = "Choose the translation method for outgoing messages",
-	targetLanguageIncoming = "Target Language For Incoming Messages",
-	targetLanguageIncomingD = "You need to click to apply change",
+	targetLanguageIncoming = "Target Language Incoming",
+	targetLanguageIncomingD = "Language to translate incoming messages to. You need to click to apply change",
 	sendTranslatedMessage = "Send Translated Message",
-	targetLanguageOutgoing = "Target Language For Outgoing Messages",
-	targetLanguageOutgoingD = "Final Language of messages you sent. You need to click to apply change",
+	targetLanguageOutgoing = "Target Language Outgoing",
+	targetLanguageOutgoingD = "Language to translate your messages to. You need to click to apply change",
 	sendMessage = "Send Message",
 	sendMessageD = "Input the text for your message",
 	inputMessage = "Please input your message",
@@ -616,7 +616,86 @@ local engTranslations = {
 		chatGPTPromptChangedTo = "ChatGPT Prompt Preset changed to {arg1}",
 		selectedColor = "Selected color: {arg1}",
 		customLabelForTeamTranslation = "Custom Label For [{arg1}] Translation",
-		customLabelForAllTranslation = "Custom Label For [{arg1}] Translation"
+		customLabelForAllTranslation = "Custom Label For [{arg1}] Translation",
+		translationMethodIncomingChangedTo = "Translation Method Incoming changed to {arg1}",
+		translationMethodOutgoingChangedTo = "Translation Method Outgoing changed to {arg1}"
+	}
+}
+local esTranslations  = {
+	noInternetAccess = "Para usar Polyglot Translator, habilite el acceso a internet",
+	checkForUpdates = "Buscar actualizaciones",
+	checkForUpdatesD = "Buscar actualizaciones para Polyglot Translator",
+	updateInProgress = "Actualización en curso...",
+	updating = "Actualizando...",
+	failedToUpdate = "Error al actualizar el archivo de script.",
+	unexpectedResponse = "Archivo de actualización inesperado. El archivo local no cambiará.",
+	failedToDownloadFromGitHub = "Error al descargar desde GitHub.",
+	noUpdatesAvailable = "No hay actualizaciones disponibles.",
+	chatGPTSettings = "Ajustes de ChatGPT",
+	chatGPTSettingsD = "Ajustes de ChatGPT",
+	apiKeyInput = "Clave API",
+	apiKeyInputD = "Ingrese su clave API",
+	chatGPTPromptPreset = "Preajuste de indicaciones de ChatGPT",
+	chatGPTPromptPresetD = "Elija el preajuste de indicaciones para ChatGPT",
+	temperature = "Temperatura",
+	temperatureD =
+	"La temperatura de muestreo a utilizar, entre 0 y 2. Valores más altos como 0.8 harán que la salida sea más aleatoria, mientras que valores más bajos como 0.2 la harán más enfocada y determinista. Generalmente recomendamos alterar esto o el top p pero no ambos. (Por defecto: 1)",
+	topP = "Top P",
+	topPD =
+	"Número entre 0 y 1. Una alternativa al muestreo con temperatura, llamada muestreo del núcleo, donde el modelo considera los resultados de los tokens con la masa de probabilidad top p. Entonces, 0.1 significa que solo se consideran los tokens que comprenden el 10% superior de la masa de probabilidad. Generalmente recomendamos alterar esto o la temperatura, pero no ambos. (Por defecto: 1)",
+	presencePenalty = "Penalización de presencia",
+	presencePenaltyD =
+	"Número entre -2.0 y 2.0. Los valores positivos penalizan los nuevos tokens según si aparecen en el texto hasta ahora, aumentando la probabilidad del modelo de hablar sobre nuevos temas. (Por defecto: 0)",
+	frequencyPenalty = "Penalización de frecuencia",
+	frequencyPenaltyD =
+	"Número entre -2.0 y 2.0. Los valores positivos penalizan los nuevos tokens según su frecuencia existente en el texto hasta ahora, disminuyendo la probabilidad del modelo de repetir la misma línea textual. (Por defecto: 0)",
+
+	translatorListenerOn = "Escucha del traductor activada",
+	translatorListenerOnD = "El traductor escuchará los mensajes entrantes y los traducirá",
+	translateYourself = "Traducir mensajes propios",
+	translateYourselfD = "Traducir mensajes enviados por usted mismo",
+	translatedMessageDisplay = "Visualización del mensaje traducido",
+	translatedMessageDisplayD = "Ubicación del mensaje traducido. Debe hacer clic para aplicar el cambio",
+	scriptSettings = "Otros ajustes para Polyglot Translator",
+	scriptSettingsD = "Incluyendo ajustes de color y actualizaciones",
+	playerNameColor = "Color del nombre del jugador",
+	customLabelForTeamTranslationD = "Dejar en blanco volverá a la etiqueta original",
+	customLabelForAllTranslationD = "Dejar en blanco volverá a la etiqueta original",
+	translatorListenerBlacklist = "Lista negra del escucha del traductor",
+	translatorListenerBlacklistD = "Ignorar mensajes en idiomas activados en esta lista",
+	translationMethod = "Método de traducción",
+	translationMethodD = "Elija el método de traducción",
+	incomingMessages = "Mensajes entrantes",
+	incomingMessagesD = "Elija el método de traducción para mensajes entrantes",
+	outgoingMessages = "Mensajes salientes",
+	outgoingMessagesD = "Elija el método de traducción para mensajes salientes",
+	targetLanguageIncoming = "Idioma objetivo entrante",
+	targetLanguageIncomingD = "Idioma para traducir mensajes entrantes. Debe hacer clic para aplicar el cambio",
+	sendTranslatedMessage = "Enviar mensaje traducido",
+	targetLanguageOutgoing = "Idioma objetivo saliente",
+	targetLanguageOutgoingD = "Idioma para traducir sus mensajes. Debe hacer clic para aplicar el cambio",
+	sendMessage = "Enviar mensaje",
+	sendMessageD = "Ingrese el texto para su mensaje",
+	inputMessage = "Por favor ingrese su mensaje",
+	translatedMsgLocationOptions = {
+		teamChatNotNetworked = "Chat de equipo no conectado en red",
+		teamChatNetworked = "Chat de equipo conectado en red",
+		globalChatNotNetworked = "Chat global no conectado en red",
+		globalChatNetworked = "Chat global conectado en red",
+		notification = "Notificación estándar"
+	},
+	templates = {
+		-- Example: "ChatGPT Prompt Preset changed to {arg1} "
+		updateSuccessful = "Actualización exitosa, versión actual: {arg1}",
+		apiKeyNotSet = "Clave API no establecida. Ingrese su clave API en la configuración",
+		errorTranslating = "Error al traducir, Mensaje original: {arg1}, Código de estado: {arg2}",
+		errorConnectingToChatGPTAPI = "Error al conectar con la API de ChatGPT",
+		chatGPTPromptChangedTo = "Preajuste de indicaciones de ChatGPT cambiado a {arg1}",
+		selectedColor = "Color seleccionado: {arg1}",
+		customLabelForTeamTranslation = "Etiqueta personalizada para la traducción de [{arg1}]",
+		customLabelForAllTranslation = "Etiqueta personalizada para la traducción de [{arg1}]",
+		translationMethodIncomingChangedTo = "Método de traducción entrante cambiado a {arg1}",
+		translationMethodOutgoingChangedTo = "Método de traducción saliente cambiado a {arg1}"
 	}
 }
 
@@ -634,22 +713,22 @@ local frTranslations  = {
 	chatGPTSettingsD = "Paramètres ChatGPT",
 	apiKeyInput = "Clé API",
 	apiKeyInputD = "Entrez votre clé API",
-	chatGPTPromptPreset = "Préréglage de l'invite ChatGPT",
+	chatGPTPromptPreset = "Préréglage d'invite ChatGPT",
 	chatGPTPromptPresetD = "Choisissez le préréglage d'invite pour ChatGPT",
 	temperature = "Température",
 	temperatureD =
-	"Quelle température d'échantillonnage utiliser, entre 0 et 2. Des valeurs plus élevées comme 0,8 rendront la sortie plus aléatoire, tandis que des valeurs plus faibles comme 0,2 la rendront plus concentrée et déterministe. Nous recommandons généralement de modifier cela ou top p mais pas les deux. (Par défaut : 1)",
+	"Quelle température d'échantillonnage utiliser, entre 0 et 2. Des valeurs plus élevées comme 0,8 rendront la sortie plus aléatoire, tandis que des valeurs plus basses comme 0,2 la rendront plus concentrée et déterministe. Nous recommandons généralement de modifier cela ou top p mais pas les deux. (Par défaut: 1)",
 	topP = "Top P",
 	topPD =
-	"Nombre entre 0 et 1. Une alternative à l'échantillonnage avec température, appelée échantillonnage du noyau, où le modèle prend en compte les résultats des jetons avec une masse de probabilité top p. Donc 0,1 signifie que seuls les jetons représentant les 10 % supérieurs de la masse de probabilité sont pris en compte. Nous recommandons généralement de modifier cela ou la température, mais pas les deux. (Par défaut : 1)",
+	"Nombre entre 0 et 1. Une alternative à l'échantillonnage avec température, appelée échantillonnage de noyau, où le modèle considère les résultats des jetons avec une masse de probabilité de top p. Donc, 0,1 signifie que seuls les jetons représentant les 10% de masse de probabilité les plus élevés sont pris en compte. Nous recommandons généralement de modifier cela ou la température, mais pas les deux. (Par défaut: 1)",
 	presencePenalty = "Pénalité de présence",
 	presencePenaltyD =
-	"Nombre entre -2,0 et 2,0. Les valeurs positives pénalisent les nouveaux jetons en fonction de leur apparition dans le texte jusqu'à présent, augmentant la probabilité que le modèle parle de nouveaux sujets. (Par défaut : 0)",
+	"Nombre entre -2,0 et 2,0. Les valeurs positives pénalisent les nouveaux jetons en fonction de leur apparition dans le texte jusqu'à présent, augmentant la probabilité que le modèle parle de nouveaux sujets. (Par défaut: 0)",
 	frequencyPenalty = "Pénalité de fréquence",
 	frequencyPenaltyD =
-	"Nombre entre -2,0 et 2,0. Les valeurs positives pénalisent les nouveaux jetons en fonction de leur fréquence existante dans le texte jusqu'à présent, diminuant la probabilité que le modèle répète la même ligne mot pour mot. (Par défaut : 0)",
+	"Nombre entre -2,0 et 2,0. Les valeurs positives pénalisent les nouveaux jetons en fonction de leur fréquence existante dans le texte jusqu'à présent, diminuant la probabilité que le modèle répète la même ligne mot pour mot. (Par défaut: 0)",
 
-	translatorListenerOn = "Écouteur de traducteur activé",
+	translatorListenerOn = "Écouteur de traduction activé",
 	translatorListenerOnD = "Le traducteur écoutera les messages entrants et les traduira",
 	translateYourself = "Traduire ses propres messages",
 	translateYourselfD = "Traduire les messages envoyés par vous-même",
@@ -660,7 +739,7 @@ local frTranslations  = {
 	playerNameColor = "Couleur du nom du joueur",
 	customLabelForTeamTranslationD = "Le laisser vide le rétablira à l'étiquette d'origine",
 	customLabelForAllTranslationD = "Le laisser vide le rétablira à l'étiquette d'origine",
-	translatorListenerBlacklist = "Liste noire de l'écouteur de traducteur",
+	translatorListenerBlacklist = "Liste noire de l'écouteur de traduction",
 	translatorListenerBlacklistD = "Ignorer les messages dans les langues activées dans cette liste",
 	translationMethod = "Méthode de traduction",
 	translationMethodD = "Choisissez la méthode de traduction",
@@ -668,12 +747,12 @@ local frTranslations  = {
 	incomingMessagesD = "Choisissez la méthode de traduction pour les messages entrants",
 	outgoingMessages = "Messages sortants",
 	outgoingMessagesD = "Choisissez la méthode de traduction pour les messages sortants",
-	targetLanguageIncoming = "Langue cible pour les messages entrants",
-	targetLanguageIncomingD = "Vous devez cliquer pour appliquer le changement",
+	targetLanguageIncoming = "Langue cible entrante",
+	targetLanguageIncomingD =
+	"Langue pour traduire les messages entrants. Vous devez cliquerpour appliquer le changement",
 	sendTranslatedMessage = "Envoyer le message traduit",
-	targetLanguageOutgoing = "Langue cible pour les messages sortants",
-	targetLanguageOutgoingD =
-	"Langue finale des messages que vous envoyez. Vous devez cliquer pour appliquer le changement",
+	targetLanguageOutgoing = "Langue cible sortante",
+	targetLanguageOutgoingD = "Langue pour traduire vos messages. Vous devez cliquer pour appliquer le changement",
 	sendMessage = "Envoyer le message",
 	sendMessageD = "Saisissez le texte de votre message",
 	inputMessage = "Veuillez saisir votre message",
@@ -685,15 +764,17 @@ local frTranslations  = {
 		notification = "Stand Notification"
 	},
 	templates = {
-		-- Exemple: "Préréglage de l'invite ChatGPT changé en {arg1} "
-		updateSuccessful = "Mise à jour réussie, version actuelle : {arg1}",
+		-- Exemple: "Préréglage d'invite ChatGPT modifié en {arg1} "
+		updateSuccessful = "Mise à jour réussie, version actuelle: {arg1}",
 		apiKeyNotSet = "Clé API non définie. Veuillez entrer votre clé API dans les paramètres",
-		errorTranslating = "Erreur de traduction, message original : {arg1}, code d'état : {arg2}",
+		errorTranslating = "Erreur de traduction, Message original: {arg1}, Code d'état: {arg2}",
 		errorConnectingToChatGPTAPI = "Erreur de connexion à l'API ChatGPT",
-		chatGPTPromptChangedTo = "Préréglage de l'invite ChatGPT changé en {arg1}",
-		selectedColor = "Couleur sélectionnée : {arg1}",
+		chatGPTPromptChangedTo = "Préréglage d'invite ChatGPT modifié en {arg1}",
+		selectedColor = "Couleur sélectionnée: {arg1}",
 		customLabelForTeamTranslation = "Étiquette personnalisée pour la traduction [{arg1}]",
-		customLabelForAllTranslation = "Étiquette personnalisée pour la traduction [{arg1}]"
+		customLabelForAllTranslation = "Étiquette personnalisée pour la traduction [{arg1}]",
+		translationMethodIncomingChangedTo = "Méthode de traduction entrante modifiée en {arg1}",
+		translationMethodOutgoingChangedTo = "Méthode de traduction sortante modifiée en {arg1}"
 	}
 }
 
@@ -769,14 +850,94 @@ local zhTranslations  = {
 		chatGPTPromptChangedTo = "ChatGPT 提示预设更改为 {arg1}",
 		selectedColor = "已选择颜色：{arg1}",
 		customLabelForTeamTranslation = "自定义 [{arg1}] 翻译标签",
-		customLabelForAllTranslation = "自定义 [{arg1}] 翻译标签"
+		customLabelForAllTranslation = "自定义 [{arg1}] 翻译标签",
+		translationMethodIncomingChangedTo = "传入消息的翻译方法更改为 {arg1}",
+		translationMethodOutgoingChangedTo = "发出消息的翻译方法更改为 {arg1}"
 	}
 }
-local languages       = { "en", "fr", "zh" }
+
+local jaTranslations  = {
+	noInternetAccess = "Polyglot Translatorを使用するには、インターネットアクセスを有効にしてください",
+	checkForUpdates = "更新を確認",
+	checkForUpdatesD = "Polyglot Translatorの更新を確認",
+	updateInProgress = "更新中...",
+	updating = "更新しています...",
+	failedToUpdate = "スクリプトファイルの更新に失敗しました。",
+	unexpectedResponse = "予期しない更新ファイル。ローカルファイルは変更されません。",
+	failedToDownloadFromGitHub = "GitHubからのダウンロードに失敗しました。",
+	noUpdatesAvailable = "利用可能な更新はありません。",
+	chatGPTSettings = "ChatGPT設定",
+	chatGPTSettingsD = "ChatGPT設定",
+	apiKeyInput = "APIキー",
+	apiKeyInputD = "APIキーを入力してください",
+	chatGPTPromptPreset = "ChatGPTプロンプトプリセット",
+	chatGPTPromptPresetD = "ChatGPTのプロンプトプリセットを選択",
+	temperature = "温度",
+	temperatureD =
+	"0から2までの範囲でサンプリング温度を使用します。0.8のような高い値は出力をランダムにし、0.2のような低い値は出力を集中的かつ決定的にします。一般的に、これまたはトップpを変更することをお勧めしますが、両方は変更しないでください。(デフォルト：1)",
+	topP = "トップP",
+	topPD =
+	"0から1までの数値。温度でサンプリングする代わりに、核サンプリングと呼ばれる方法で、モデルはトップp確率質量のトークンの結果を検討します。したがって、0.1は、トップ10％の確率質量を構成するトークンのみが考慮されることを意味します。一般的に、これまたは温度を変更することをお勧めしますが、両方は変更しないでください。(デフォルト：1)",
+	presencePenalty = "出現ペナルティ",
+	presencePenaltyD =
+	"-2.0から2.0までの数値。正の値は、これまでのテキストに表示されるかどうかに基づいて新しいトークンにペナルティを与え、モデルが新しいトピックについて話す可能性を高めます。(デフォルト：0)",
+	frequencyPenalty = "頻度ペナルティ",
+	frequencyPenaltyD =
+	"-2.0から2.0までの数値。正の値は、これまでのテキストでの既存の頻度に基づいて新しいトークンにペナルティを与え、モデルが同じ行を逐語的に繰り返す可能性を減らします。(デフォルト：0)",
+
+	translatorListenerOn = "翻訳リスナーオン",
+	translatorListenerOnD = "翻訳者は着信メッセージをリッスンして翻訳します",
+	translateYourself = "自分のメッセージを翻訳する",
+	translateYourselfD = "自分が送信したメッセージを翻訳する",
+	translatedMessageDisplay = "翻訳されたメッセージの表示",
+	translatedMessageDisplayD = "翻訳されたメッセージの場所。変更を適用するにはクリックする必要があります",
+	scriptSettings = "Polyglot Translatorのその他の設定",
+	scriptSettingsD = "カラー設定や更新を含む",
+	playerNameColor = "プレイヤー名の色",
+	customLabelForTeamTranslationD = "空白にすると、元のラベルに戻ります",
+	customLabelForAllTranslationD = "空白にすると、元のラベルに戻ります",
+	translatorListenerBlacklist = "翻訳リスナーブラックリスト",
+	translatorListenerBlacklistD = "このリストでオンに切り替えられた言語のメッセージを無視する",
+	translationMethod = "翻訳方法",
+	translationMethodD = "翻訳方法を選択してください",
+	incomingMessages = "受信メッセージ",
+	incomingMessagesD = "受信メッセージの翻訳方法を選択してください",
+	outgoingMessages = "送信メッセージ",
+	outgoingMessagesD = "送信メッセージの翻訳方法を選択してください",
+	targetLanguageIncoming = "受信メッセージのターゲット言語",
+	targetLanguageIncomingD = "受信メッセージを翻訳する言語。変更を適用するにはクリックする必要があります",
+	sendTranslatedMessage = "翻訳されたメッセージを送信",
+	targetLanguageOutgoing = "送信メッセージのターゲット言語",
+	targetLanguageOutgoingD = "あなたのメッセージを翻訳する言語。変更を適用するにはクリックする必要があります",
+	sendMessage = "メッセージを送信",
+	sendMessageD = "メッセージのテキストを入力してください",
+	inputMessage = "メッセージを入力してください",
+	translatedMsgLocationOptions = {
+		teamChatNotNetworked = "ネットワーク化されていないチームチャット",
+		teamChatNetworked = "ネットワーク化されたチームチャット",
+		globalChatNotNetworked = "ネットワーク化されていないグローバルチャット",
+		globalChatNetworked = "ネットワーク化されたグローバルチャット",
+		notification = "スタンド通知"
+	},
+	templates = {
+		-- 例："ChatGPTプロンプトプリセットが{arg1}に変更されました"
+		updateSuccessful = "更新が成功しました、現在のバージョン：{arg1}",
+		apiKeyNotSet = "APIキーが設定されていません。設定でAPIキーを入力してください",
+		errorTranslating = "翻訳エラー、元のメッセージ：{arg1}、ステータスコード：{arg2}",
+		errorConnectingToChatGPTAPI = "ChatGPT APIへの接続エラー",
+		chatGPTPromptChangedTo = "ChatGPTプロンプトプリセットが{arg1}に変更されました",
+		selectedColor = "選択された色：{arg1}",
+		customLabelForTeamTranslation = "[{arg1}]翻訳のカスタムラベル",
+		customLabelForAllTranslation = "[{arg1}]翻訳のカスタムラベル"
+	}
+}
+local languages       = { "en", "es", "fr", "zh", "ja" }
 local translations    = {
 	en = engTranslations,
+	es = esTranslations,
 	fr = frTranslations,
-	zh = zhTranslations
+	zh = zhTranslations,
+	ja = jaTranslations
 }
 function merge(t1, t2)
 	for k, v in pairs(t2) do
@@ -821,6 +982,8 @@ if not async_http.have_access() then
     polyglotUtils.toast(LOC.noInternetAccess)
     util.stop_script()
 end
+
+polyglotUpdater.runUpdater(0)
 
 config.translationMethodIncoming = "Google Translate"
 config.translationMethodOutgoing = "Google Translate"
@@ -1039,6 +1202,7 @@ local translationMethodIncomingMenu = menu.list_select(translationMethodMenu, LO
     LOC.incomingMessagesD, config.TranslationMethodOptions, 1,
     function(index, option, prevIndex, clickType)
         handleTranslationMethodChange(option)
+        polyglotUtils.toast(LOC.templates.translationMethodIncomingChangedTo, option)
         config.translationMethodIncoming = option
     end)
 
@@ -1046,6 +1210,7 @@ local translationMethodOutgoingMenu = menu.list_select(translationMethodMenu, LO
     LOC.outgoingMessagesD, config.TranslationMethodOptions, 1,
     function(index, option, prevIndex, clickType)
         handleTranslationMethodChange(option)
+        polyglotUtils.toast(LOC.templates.translationMethodOutgoingChangedTo, option)
         config.translationMethodOutgoing = option
     end)
 
