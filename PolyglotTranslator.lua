@@ -8,6 +8,13 @@ CHANGELOG
 - Fixed failure to load custom colors for message rendering.
 - Added Polyglot Popup as another presentation mode for message, which is still under development to draw DirectX for input and presentation.
 --- END OF VERSION --- ]]
+
+-- LEGACY
+--[[ local versionInfo = {
+    major = 9,
+    minor = 9,
+    patch = 9
+} ]]
 package.preload['src.docs.CommandRef'] = (function (...)
 					local _ENV = _ENV;
 					local function module(name, ...)
@@ -297,24 +304,6 @@ local moduleExports = {}
 local mainGitHubPath = "/Totoro-Li/PolyglotTranslator/main/"
 local mainFileName = "PolyglotTranslator.lua"
 
-local function parseVersionInfoLegacy(content)
-    local versionInfoPattern = "local%s+versionInfo%s*=%s*{(.-)}"
-    local majorPattern = "major%s*=%s*(%d+)"
-    local minorPattern = "minor%s*=%s*(%d+)"
-    local patchPattern = "patch%s*=%s*(%d+)"
-
-    local versionInfoStr = content:match(versionInfoPattern)
-    if not versionInfoStr then return nil end
-
-    local major = tonumber(versionInfoStr:match(majorPattern))
-    local minor = tonumber(versionInfoStr:match(minorPattern))
-    local patch = tonumber(versionInfoStr:match(patchPattern))
-
-    if not major or not minor or not patch then return nil end
-
-    return { major = major, minor = minor, patch = patch }
-end
-
 local function parseVersionInfo(content)
     local majorPattern = "MAJOR%s*:%s*(%d+)"
     local minorPattern = "MINOR%s*:%s*(%d+)"
@@ -326,8 +315,8 @@ local function parseVersionInfo(content)
     local patch = tonumber(content:match(patchPattern))
     local changelog = content:match(changelogPattern)
 
-    if not major or not minor or not patch then 
-        return parseVersionInfoLegacy(content)
+    if not major or not minor or not patch then
+        return nil
     end
 
     local changelogLines = {}
@@ -336,7 +325,9 @@ local function parseVersionInfo(content)
     end
 
     return {
-        version = { major = major, minor = minor, patch = patch },
+        major = major,
+        minor = minor,
+        patch = patch,
         changelog = changelogLines
     }
 end
