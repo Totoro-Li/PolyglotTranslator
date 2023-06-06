@@ -1,7 +1,7 @@
 --[[ --- START OF VERSION ---
 MAJOR:1
 MINOR:2
-PATCH:0
+PATCH:2
 CHANGELOG
 - Fixed "Attempt to yield across a C-call boundary" error caused in bugs of ScaleformLib, now this library is no longer needed.
 - Fixed bugs in loading script, which causes settings to revert to default.
@@ -357,7 +357,7 @@ local function startUpdate(content, updateCallback)
     ---@type file*?
     local scriptFile = io.open(filesystem.scripts_dir() .. mainFileName, "wb")
     if scriptFile == nil then
-        polyglotUtils.toast(LOC.failedToUpdate)
+        updateCallback(newVersionInfo)
         return
     end
     -- Read current version info and match with parseVersionInfo
