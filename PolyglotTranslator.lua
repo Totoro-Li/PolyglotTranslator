@@ -1,3 +1,223 @@
+--[[ --- START OF VERSION ---
+MAJOR:1
+MINOR:2
+PATCH:0
+CHANGELOG
+- Fixed "Attempt to yield across a C-call boundary" error caused in bugs of ScaleformLib, now this library is no longer needed.
+- Fixed bugs in loading script, which causes settings to revert to default.
+- Fixed failure to load custom colors for message rendering.
+- Added Polyglot Popup as another presentation mode for message, which is still under development to draw DirectX for input and presentation.
+--- END OF VERSION --- ]]
+package.preload['src.docs.CommandRef'] = (function (...)
+					local _ENV = _ENV;
+					local function module(name, ...)
+						local t = package.loaded[name] or _ENV[name] or { _NAME = name };
+						package.loaded[name] = t;
+						for i = 1, select("#", ...) do
+							(select(i, ...))(t);
+						end
+						_ENV = t;
+						_M = t;
+						return t;
+					end
+				---@class CommandRef
+local CommandRef = {}
+
+---@type boolean
+CommandRef.visible = nil
+
+---@type any
+CommandRef.value = nil
+
+---@type number
+CommandRef.min_value = nil
+
+---@type number
+CommandRef.max_value = nil
+
+---@type number
+CommandRef.step_size = nil
+
+---@type number
+CommandRef.precision = nil
+
+---@type string
+CommandRef.indicator_type = nil
+
+---@type any
+CommandRef.target = nil
+
+---@return boolean
+function CommandRef:isValid() end
+
+---@return CommandRef
+function CommandRef:refByRelPath() end
+
+function CommandRef:delete() end
+
+function CommandRef:detach() end
+
+function CommandRef:attach(...) end
+
+function CommandRef:attachAfter(...) end
+
+function CommandRef:attachBefore(...) end
+
+function CommandRef:focus() end
+
+---@return boolean
+function CommandRef:isFocused() end
+
+---@return table
+function CommandRef:getApplicablePlayers() end
+
+---@return any
+function CommandRef:getParent() end
+
+---@return string
+function CommandRef:getType() end
+
+---@return table
+function CommandRef:getChildren() end
+
+function CommandRef:trigger() end
+
+function CommandRef:onTickInViewport(...) end
+
+function CommandRef:onFocus(...) end
+
+function CommandRef:onBlur(...) end
+
+function CommandRef:removeHandler(...) end
+
+---@return any
+function CommandRef:getState() end
+
+---@return any
+function CommandRef:getDefaultState() end
+
+function CommandRef:applyDefaultState() end
+
+function CommandRef:setListActionOptions(...) end
+
+function CommandRef:setTextsliderOptions(...) end
+
+function CommandRef:addValueReplacement(...) end
+
+function CommandRef:setTemporary() end
+
+function CommandRef:list(...) end
+
+function CommandRef:action(...) end
+
+function CommandRef:toggle(...) end
+
+function CommandRef:toggle_loop(...) end
+
+function CommandRef:slider(...) end
+
+function CommandRef:slider_float(...) end
+
+function CommandRef:click_slider(...) end
+
+function CommandRef:click_slider_float(...) end
+
+function CommandRef:list_select(...) end
+
+function CommandRef:list_action(...) end
+
+function CommandRef:text_input(...) end
+
+function CommandRef:colour(...) end
+
+function CommandRef:rainbow(...) end
+
+function CommandRef:divider(...) end
+
+function CommandRef:readonly(...) end
+
+function CommandRef:hyperlink(...) end
+
+function CommandRef:textslider(...) end
+
+function CommandRef:textslider_stateful(...) end
+
+function CommandRef:link(...) end
+
+---@class CommandUniqPtr
+local CommandUniqPtr = {}
+
+function CommandUniqPtr:ref() end
+
+return CommandRef
+ end)
+package.preload['src.natives.natives'] = (function (...)
+					local _ENV = _ENV;
+					local function module(name, ...)
+						local t = package.loaded[name] or _ENV[name] or { _NAME = name };
+						package.loaded[name] = t;
+						for i = 1, select("#", ...) do
+							(select(i, ...))(t);
+						end
+						_ENV = t;
+						_M = t;
+						return t;
+					end
+				local HUD = {
+    ["GET_HUD_COLOUR"]=--[[void]] function(--[[int]] hudColorIndex,--[[int* (pointer)]] r,--[[int* (pointer)]] g,--[[int* (pointer)]] b,--[[int* (pointer)]] a)native_invoker.begin_call()native_invoker.push_arg_int(hudColorIndex)native_invoker.push_arg_pointer(r)native_invoker.push_arg_pointer(g)native_invoker.push_arg_pointer(b)native_invoker.push_arg_pointer(a)native_invoker.end_call_2(0x7C9C91AB74A0360F)end,
+}
+
+local GRAPHICS = {
+    ["REQUEST_SCALEFORM_MOVIE"]=--[[int]] function(--[[string]] scaleformName)native_invoker.begin_call()native_invoker.push_arg_string(scaleformName)native_invoker.end_call_2(0x11FE353CF9733E6F)return native_invoker.get_return_value_int()end,
+    ["HAS_SCALEFORM_MOVIE_LOADED"]=--[[BOOL (bool)]] function(--[[int]] scaleformHandle)native_invoker.begin_call()native_invoker.push_arg_int(scaleformHandle)native_invoker.end_call_2(0x85F01B8D5B90570E)return native_invoker.get_return_value_bool()end,
+    ["DRAW_SCALEFORM_MOVIE_FULLSCREEN"]=--[[void]] function(--[[int]] scaleform,--[[int]] red,--[[int]] green,--[[int]] blue,--[[int]] alpha,--[[int]] unk)native_invoker.begin_call()native_invoker.push_arg_int(scaleform)native_invoker.push_arg_int(red)native_invoker.push_arg_int(green)native_invoker.push_arg_int(blue)native_invoker.push_arg_int(alpha)native_invoker.push_arg_int(unk)native_invoker.end_call_2(0x0DF606929C105BE1)end,
+    ["BEGIN_SCALEFORM_MOVIE_METHOD"]=--[[BOOL (bool)]] function(--[[int]] scaleform,--[[string]] methodName)native_invoker.begin_call()native_invoker.push_arg_int(scaleform)native_invoker.push_arg_string(methodName)native_invoker.end_call_2(0xF6E48914C7A8694E)return native_invoker.get_return_value_bool()end,
+    ["SCALEFORM_MOVIE_METHOD_ADD_PARAM_INT"]=--[[void]] function(--[[int]] value)native_invoker.begin_call()native_invoker.push_arg_int(value)native_invoker.end_call_2(0xC3D0841A0CC546A6)end,
+    ["END_SCALEFORM_MOVIE_METHOD"]=--[[void]] function()native_invoker.begin_call()native_invoker.end_call_2(0xC6796A8FFA375E53)end,
+    -- Pushes an integer for the Scaleform function onto the stack.
+	["SCALEFORM_MOVIE_METHOD_ADD_PARAM_INT"]=--[[void]] function(--[[int]] value)native_invoker.begin_call()native_invoker.push_arg_int(value)native_invoker.end_call_2(0xC3D0841A0CC546A6)end,
+	-- Pushes a float for the Scaleform function onto the stack.
+	["SCALEFORM_MOVIE_METHOD_ADD_PARAM_FLOAT"]=--[[void]] function(--[[float]] value)native_invoker.begin_call()native_invoker.push_arg_float(value)native_invoker.end_call_2(0xD69736AAE04DB51A)end,
+	-- Pushes a boolean for the Scaleform function onto the stack.
+	["SCALEFORM_MOVIE_METHOD_ADD_PARAM_BOOL"]=--[[void]] function(--[[BOOL (bool)]] value)native_invoker.begin_call()native_invoker.push_arg_bool(value)native_invoker.end_call_2(0xC58424BA936EB458)end,
+	-- Called prior to adding a text component to the UI. After doing so, GRAPHICS::END_TEXT_COMMAND_SCALEFORM_STRING is called.
+	-- 
+	-- Examples:
+	-- GRAPHICS::BEGIN_TEXT_COMMAND_SCALEFORM_STRING("NUMBER");
+	-- HUD::ADD_TEXT_COMPONENT_INTEGER(MISC::ABSI(a_1));
+	-- GRAPHICS::END_TEXT_COMMAND_SCALEFORM_STRING();
+	-- 
+	-- GRAPHICS::BEGIN_TEXT_COMMAND_SCALEFORM_STRING("STRING");
+	-- HUD::_ADD_TEXT_COMPONENT_STRING(a_2);
+	-- GRAPHICS::END_TEXT_COMMAND_SCALEFORM_STRING();
+	-- 
+	-- GRAPHICS::BEGIN_TEXT_COMMAND_SCALEFORM_STRING("STRTNM2");
+	-- HUD::_0x17299B63C7683A2B(v_3);
+	-- HUD::_0x17299B63C7683A2B(v_4);
+	-- GRAPHICS::END_TEXT_COMMAND_SCALEFORM_STRING();
+	-- 
+	-- GRAPHICS::BEGIN_TEXT_COMMAND_SCALEFORM_STRING("STRTNM1");
+	-- HUD::_0x17299B63C7683A2B(v_3);
+	-- GRAPHICS::END_TEXT_COMMAND_SCALEFORM_STRING();
+	["BEGIN_TEXT_COMMAND_SCALEFORM_STRING"]=--[[void]] function(--[[string]] componentType)native_invoker.begin_call()native_invoker.push_arg_string(componentType)native_invoker.end_call_2(0x80338406F3475E55)end,
+	["END_TEXT_COMMAND_SCALEFORM_STRING"]=--[[void]] function()native_invoker.begin_call()native_invoker.end_call_2(0x362E2D3FE93A9959)end,
+	-- Same as END_TEXT_COMMAND_SCALEFORM_STRING but does not perform HTML conversion for text tokens.
+	-- 
+	-- END_TEXT_COMMAND_VIA_SPECIAL_MODIFIABLE_STRING?
+	["END_TEXT_COMMAND_UNPARSED_SCALEFORM_STRING"]=--[[void]] function()native_invoker.begin_call()native_invoker.end_call_2(0xAE4E8157D9ECF087)end,
+	-- Same as SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING
+	-- Both SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING / _SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING_2 works, but _SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING_2 is usually used for "name" (organisation, players..).
+	["SCALEFORM_MOVIE_METHOD_ADD_PARAM_LITERAL_STRING"]=--[[void]] function(--[[string]] string)native_invoker.begin_call()native_invoker.push_arg_string(string)native_invoker.end_call_2(0x77FE3402004CD1B0)end,
+	["SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING"]=--[[void]] function(--[[string]] string)native_invoker.begin_call()native_invoker.push_arg_string(string)native_invoker.end_call_2(0xBA7148484BD90365)end,
+	["SCALEFORM_MOVIE_METHOD_ADD_PARAM_PLAYER_NAME_STRING"]=--[[void]] function(--[[string]] string)native_invoker.begin_call()native_invoker.push_arg_string(string)native_invoker.end_call_2(0xE83A3E3557A56640)end,
+}
+
+-- Export entire namespace
+return {
+    HUD = HUD,
+    GRAPHICS = GRAPHICS
+}
+ end)
 package.preload['src.lib.utils'] = (function (...)
 					local _ENV = _ENV;
 					local function module(name, ...)
@@ -70,19 +290,14 @@ package.preload['src.lib.updater'] = (function (...)
 						_M = t;
 						return t;
 					end
-				-- package.loaded["src.lib.updater"] = nil
-local LOC = require "src.lib.localization"
+				local LOC = require "src.lib.localization"
 local polyglotUtils = require "src.lib.utils"
 local moduleExports = {}
-local versionInfo = {
-    major = 1,
-    minor = 1,
-    patch = 0
-}
+
 local mainGitHubPath = "/Totoro-Li/PolyglotTranslator/main/"
 local mainFileName = "PolyglotTranslator.lua"
 
-local function parseVersionInfo(content)
+local function parseVersionInfoLegacy(content)
     local versionInfoPattern = "local%s+versionInfo%s*=%s*{(.-)}"
     local majorPattern = "major%s*=%s*(%d+)"
     local minorPattern = "minor%s*=%s*(%d+)"
@@ -100,6 +315,33 @@ local function parseVersionInfo(content)
     return { major = major, minor = minor, patch = patch }
 end
 
+local function parseVersionInfo(content)
+    local majorPattern = "MAJOR%s*:%s*(%d+)"
+    local minorPattern = "MINOR%s*:%s*(%d+)"
+    local patchPattern = "PATCH%s*:%s*(%d+)"
+    local changelogPattern = "CHANGELOG%s*(.-)%-%-%-%s*END OF VERSION"
+
+    local major = tonumber(content:match(majorPattern))
+    local minor = tonumber(content:match(minorPattern))
+    local patch = tonumber(content:match(patchPattern))
+    local changelog = content:match(changelogPattern)
+
+    if not major or not minor or not patch then 
+        return parseVersionInfoLegacy(content)
+    end
+
+    local changelogLines = {}
+    for line in changelog:gmatch("[^\r\n]+") do
+        table.insert(changelogLines, line)
+    end
+
+    return {
+        version = { major = major, minor = minor, patch = patch },
+        changelog = changelogLines
+    }
+end
+
+
 local function isUpdateNeeded(currentVersion, newVersion)
     if not newVersion then return false end
     util.log("Current version: " .. currentVersion.major .. "." .. currentVersion.minor .. "." .. currentVersion.patch)
@@ -113,36 +355,61 @@ local function isUpdateNeeded(currentVersion, newVersion)
 
     return false
 end
-local updateInProgress = false
+
+
+local function startUpdate(content, updateCallback)
+    local newVersionInfo = parseVersionInfo(content)
+    if not newVersionInfo then
+        polyglotUtils.toast(LOC.unexpectedResponse)
+        return
+    end
+    ---@type file*?
+    local scriptFile = io.open(filesystem.scripts_dir() .. mainFileName, "wb")
+    if scriptFile == nil then
+        polyglotUtils.toast(LOC.failedToUpdate)
+        return
+    end
+    -- Read current version info and match with parseVersionInfo
+    local versionInfo = parseVersionInfo(scriptFile:read("*a"))
+    scriptFile:close()
+    if isUpdateNeeded(versionInfo, newVersionInfo) then
+        updateCallback(newVersionInfo)
+    else
+        polyglotUtils.toast(LOC.noUpdatesAvailable)
+    end
+end
+
+local State <const> =
+{
+    Idle = 0,
+    DownloadingScript = 1
+}
+local state = State.Idle
 
 function moduleExports.runUpdater(clickType)
-    if updateInProgress then
+    if state == State.DownloadingScript then
         polyglotUtils.toast(LOC.updateInProgress)
         return
     end
     async_http.init("https://raw.githubusercontent.com", mainGitHubPath .. mainFileName, function(resBody, _, statusCode)
         if statusCode >= 200 and statusCode < 300 and resBody and resBody:len() > 0 then
-            local newVersionInfo = parseVersionInfo(resBody)
-            if not newVersionInfo then
-                polyglotUtils.toast(LOC.unexpectedResponse)
-                return
-            end
-            if isUpdateNeeded(versionInfo, newVersionInfo) then
-                updateInProgress = true
+            startUpdate(resBody, function(newVersionInfo)
+                state = State.DownloadingScript
                 polyglotUtils.toast(LOC.updating)
                 local scriptFile = io.open(filesystem.scripts_dir() .. mainFileName, "wb")
                 if not scriptFile then
                     polyglotUtils.toast(LOC.unexpectedResponse)
-                    updateInProgress = false
+                    state = State.Idle
                     return
                 end
+
                 scriptFile:write(resBody .. "\n")
                 scriptFile:close()
-                polyglotUtils.toast(LOC.templates.updateSuccessful, newVersionInfo.major .. "." .. newVersionInfo.minor .. "." .. newVersionInfo.patch)
+                polyglotUtils.toast(LOC.templates.updateSuccessful,
+                    newVersionInfo.major .. "." .. newVersionInfo.minor .. "." .. newVersionInfo.patch)
+                polyglotUtils.toast(LOC.changelog .. "\n" .. table.concat(newVersionInfo.changelog, "\n"))
                 util.restart_script()
-            elseif clickType == 0 then
-                polyglotUtils.toast(LOC.noUpdatesAvailable)
-            end
+            end)
         else
             polyglotUtils.toast(LOC.failedToUpdate)
         end
@@ -182,6 +449,8 @@ Config.__index = function(self, key)
         return polyglotTranslation.getLangLookupByName()
     elseif key == "TranslationMethodOptions" then
         return polyglotTranslation.getTranslationMethodOptions()
+    elseif key == "TranslatedMsgLocationOptions" then
+        return polyglotChat.getTranslatedMsgLocationOptions()
     else
         return rawget(self, key)
     end
@@ -464,11 +733,181 @@ package.preload['src.lib.chat'] = (function (...)
 					end
 				-- package.loaded["src.lib.chat"] = nil
 local polyglotUtils = require("src.lib.utils")
-util.ensure_package_is_installed("lua/ScaleformLib")
-local sfchat = require("lib.ScaleformLib")("multiplayer_chat")
-sfchat:draw_fullscreen()
+local LOC = require("src.lib.localization")
+local natives = require("src.natives.natives")
+
+local scaleformHandleTable = {}
+local scaleformTypes = {
+    ["number"] = natives.GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_FLOAT,
+    ["string"] = natives.GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_PLAYER_NAME_STRING,
+    ["boolean"] = natives.GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_BOOL
+}
+
+local checkScaleformAndLoad = function(scaleformName)
+    if not scaleformHandleTable[scaleformName] or not natives.GRAPHICS.HAS_SCALEFORM_MOVIE_LOADED(scaleformHandleTable[scaleformName]) then
+        local scaleformHandle = natives.GRAPHICS.REQUEST_SCALEFORM_MOVIE(scaleformName)
+        while not natives.GRAPHICS.HAS_SCALEFORM_MOVIE_LOADED(scaleformHandle) do
+            util.yield()
+        end
+        scaleformHandleTable[scaleformName] = scaleformHandle
+        natives.GRAPHICS.DRAW_SCALEFORM_MOVIE_FULLSCREEN(scaleformHandle, 255, 255, 255, 255, 1)
+    end
+end
+
+local function callScaleformMethod(scaleformName, method, ...)
+    local args = { ... }
+    checkScaleformAndLoad(scaleformName)
+    if natives.GRAPHICS.BEGIN_SCALEFORM_MOVIE_METHOD(scaleformHandleTable[scaleformName], method) then
+        for i = 1, #args do
+            local arg = args[i]
+            local type = type(arg)
+            local pushFunc = scaleformTypes[type]
+            if pushFunc then
+                pushFunc(arg)
+            else
+                error("Invalid type passed to scaleform method: " .. type)
+            end
+        end
+        natives.GRAPHICS.END_SCALEFORM_MOVIE_METHOD()
+    end
+end
+
+---@param player string
+---@param message string
+---@param scope string
+---@param teamOnly boolean
+---@param eHudColour number
+local function drawScaleformMultiplayerChat(player, message, scope, teamOnly, eHudColour)    
+    callScaleformMethod("MULTIPLAYER_CHAT", "ADD_MESSAGE", player, message, scope, teamOnly, eHudColour)
+end
 
 local moduleExports = {}
+
+local colors = {
+    topbar = { ["r"] = 50 / 255, ["g"] = 50 / 255, ["b"] = 50 / 255, ["a"] = 1.0 },       --grayish
+    background = { ["r"] = 5 / 255, ["g"] = 5 / 255, ["b"] = 5 / 255, ["a"] = 0.5 },      --blackish
+    subhead = { ["r"] = 1, ["g"] = 1, ["b"] = 1, ["a"] = 1.0 },                           --white
+    label = { ["r"] = 1, ["g"] = 1, ["b"] = 1, ["a"] = 1.0 },                             --white
+    highlight = { ["r"] = 160 / 255, ["g"] = 160 / 255, ["b"] = 160 / 255, ["a"] = 1.0 }, -- also grayish
+}
+
+local TranslatedMsgLocationOptions = {
+    LOC.translatedMsgLocationOptions.teamChatNotNetworked,
+    LOC.translatedMsgLocationOptions.teamChatNetworked,
+    LOC.translatedMsgLocationOptions.globalChatNotNetworked,
+    LOC.translatedMsgLocationOptions.globalChatNetworked,
+    LOC.translatedMsgLocationOptions.notification,
+    LOC.translatedMsgLocationOptions.popup
+}
+
+function moduleExports.getTranslatedMsgLocationOptions()
+    local options = {}
+    for i, v in ipairs(TranslatedMsgLocationOptions) do
+        options[i] = v
+    end
+    return options
+end
+
+local messages = {}
+local display_duration = 3000 -- Time in ms to display each message
+local max_messages = 5        -- Maximum number of messages to display at a time
+
+local function calculate_max_scale(text, max_width)
+    local text_width, _ = directx.get_text_size(text)
+    local scale = 1.0
+
+    if text_width > max_width then
+        scale = max_width / text_width
+    end
+
+    return scale
+end
+
+-- Helper function to wrap the text to fit the given width
+local function wrap_text(text, width)
+    local lines = {}
+    local words = {}
+    local line = ""
+    local line_width
+
+    for word in text:gmatch("%S+") do
+        table.insert(words, word)
+    end
+
+    for i, word in ipairs(words) do
+        if line == "" then
+            line = word
+        else
+            line_width, _ = directx.get_text_size(line)
+            if line_width < width then
+                line = line .. " " .. word
+            else
+                table.insert(lines, line)
+                line = word
+            end
+        end
+
+        if i == #words then
+            table.insert(lines, line)
+        end
+    end
+
+    return lines
+end
+
+local function display_popup(sender, message, src_language)
+    local current_time = util.current_time_millis()
+    table.insert(messages, {
+        sender = sender,
+        message = message,
+        src_language = src_language,
+        banner_color = { r = math.random(), g = math.random(), b = math.random(), a = 1.0 },
+        start_time = current_time
+    })
+
+    if #messages > max_messages then
+        table.remove(messages, 1)
+    end
+end
+
+util.create_tick_handler(function()
+    local current_time = util.current_time_millis()
+
+    for i, msg in ipairs(messages) do
+        if current_time - msg.start_time > display_duration then
+            table.remove(messages, i)
+            break
+        end
+
+        local x, y, width, height = 0.75, 0.05 * (i - 1), 0.2, 0.05
+        local padding = 0.005
+
+        -- Calculate the maximum scale for sender name and message
+        local sender_scale = calculate_max_scale(msg.sender, width * 0.4)
+        local message_scale = calculate_max_scale(msg.message, width * 0.6)
+
+        -- Draw the background rectangle
+        directx.draw_rect(x, y, width, height, colors.background)
+        directx.draw_rect(x, y, padding, height, msg.banner_color)
+
+        -- Draw the sender name
+        directx.draw_text(x + padding, y + padding / 2, msg.sender, ALIGN_TOP_LEFT, sender_scale, colors.label, true)
+
+        -- Draw the message with word wrapping
+        local wrapped_message = wrap_text(msg.message, width * 0.6)
+        local line_spacing = 0.01
+        local message_y = y + height / 2
+        for _, line in ipairs(wrapped_message) do
+            directx.draw_text(x + padding * 2 + width * 0.4, message_y, line, ALIGN_TOP_LEFT, message_scale,
+                colors.subhead, true)
+            message_y = message_y + line_spacing
+        end
+
+        -- Draw the source language
+        directx.draw_text(x + width - padding, y + padding / 2, msg.src_language, ALIGN_TOP_RIGHT, 1.0, colors.highlight)
+    end
+end)
+
 
 local botSend = false -- To avoid infinite loop
 function moduleExports.createOnMessageCallback(config, translateTextCB)
@@ -482,35 +921,44 @@ function moduleExports.createOnMessageCallback(config, translateTextCB)
             else
                 translateTextCB(text, config.targetLanguageIncoming, config.translationMethodIncoming, config,
                     function(translation, sourceLang)
+                        ---@type string
                         local senderName = players.get_name(sender)
                         local resultText = translation
+                        ---@type number
                         local colorFinal = config.colorSelect
                         local translatedMsgLocation = config.translatedMsgLocation
+                        ---@type string
                         local teamChatLabel = config.teamChatLabel
+                        ---@type string
                         local allChatLabel = config.allChatLabel
                         if config.blacklistedLanguages[sourceLang] == true then
                             return
                         end
                         -- "Team Chat not networked", "Team Chat networked", "Global Chat not networked", "Global Chat networked", "Notification"
                         if (translatedMsgLocation == 1) then
-                            sfchat.ADD_MESSAGE(senderName, resultText, teamChatLabel, false, colorFinal)
+                            drawScaleformMultiplayerChat(senderName, resultText, teamChatLabel, false, colorFinal)
                         end
                         if (translatedMsgLocation == 2) then
                             botSend = true
+                            -- void chat.send_message(string text, bool team_chat, bool add_to_local_history, bool networked)
+                            -- add_to_local_history set to false so that the message doesn't appear twice
                             chat.send_message(senderName .. " : " .. resultText, true, false, true)
-                            sfchat.ADD_MESSAGE(senderName, resultText, teamChatLabel, false, colorFinal)
+                            drawScaleformMultiplayerChat(senderName, resultText, teamChatLabel, false, colorFinal)
                         end
                         if (translatedMsgLocation == 3) then
-                            sfchat.ADD_MESSAGE(senderName, resultText, allChatLabel, false, colorFinal)
+                            drawScaleformMultiplayerChat(senderName, resultText, allChatLabel, false, colorFinal)
                         end
                         if (translatedMsgLocation == 4) then
                             botSend = true
                             -- Ref : void chat.send_message(string text, bool team_chat, bool add_to_local_history, bool networked)
                             chat.send_message(senderName .. " : " .. resultText, false, false, true)
-                            sfchat.ADD_MESSAGE(senderName, resultText, allChatLabel, false, colorFinal)
+                            drawScaleformMultiplayerChat(senderName, resultText, allChatLabel, false, colorFinal)
                         end
                         if (translatedMsgLocation == 5) then
                             polyglotUtils.toast(senderName .. " : " .. resultText)
+                        end
+                        if (translatedMsgLocation == 6) then
+                            display_popup(senderName, resultText, sourceLang)
                         end
                     end)
             end
@@ -522,9 +970,11 @@ end
 function moduleExports.sendMessage(myText, config, translateTextCB)
     translateTextCB(myText, config.targetLanguageOutgoing, config.translationMethodOutgoing, config,
         function(translation, sourceLang)
-            for _, pId in ipairs(players.list()) do
-                chat.send_targeted_message(pId, players.user(), translation, false)
-            end
+            -- for _, pId in ipairs(players.list()) do
+            --     chat.send_targeted_message(pId, players.user(), translation, false)
+            -- end
+            -- void chat.send_message(string text, bool team_chat, bool add_to_local_history, bool networked)
+            chat.send_message(translation, false, true, true)
             util.log("Message sent: " .. translation)
         end)
 end
@@ -553,6 +1003,7 @@ local engTranslations = {
 	failedToUpdate = "Failed to update the script file.",
 	unexpectedResponse = "Unexpected update file. Local file will stay unchanged.",
 	failedToDownloadFromGitHub = "Failed to download from GitHub.",
+	changelog = "Changelog",
 	noUpdatesAvailable = "No updates available.",
 	chatGPTSettings = "ChatGPT Settings",
 	chatGPTSettingsD = "ChatGPT Settings",
@@ -605,7 +1056,8 @@ local engTranslations = {
 		teamChatNetworked = "Team Chat networked",
 		globalChatNotNetworked = "Global Chat not networked",
 		globalChatNetworked = "Global Chat networked",
-		notification = "Stand Notification"
+		notification = "Stand Notification",
+		popup = "Popup",
 	},
 	templates = {
 		-- Example: "ChatGPT Prompt Preset changed to {arg1} "
@@ -631,6 +1083,7 @@ local esTranslations  = {
 	unexpectedResponse = "Archivo de actualización inesperado. El archivo local no cambiará.",
 	failedToDownloadFromGitHub = "Error al descargar desde GitHub.",
 	noUpdatesAvailable = "No hay actualizaciones disponibles.",
+	changelog = "Registro de cambios",
 	chatGPTSettings = "Ajustes de ChatGPT",
 	chatGPTSettingsD = "Ajustes de ChatGPT",
 	apiKeyInput = "Clave API",
@@ -682,7 +1135,8 @@ local esTranslations  = {
 		teamChatNetworked = "Chat de equipo conectado en red",
 		globalChatNotNetworked = "Chat global no conectado en red",
 		globalChatNetworked = "Chat global conectado en red",
-		notification = "Notificación estándar"
+		notification = "Notificación estándar",
+		popup = "Ventana emergente",
 	},
 	templates = {
 		-- Example: "ChatGPT Prompt Preset changed to {arg1} "
@@ -708,6 +1162,7 @@ local frTranslations  = {
 	failedToUpdate = "Échec de la mise à jour du fichier de script.",
 	unexpectedResponse = "Fichier de mise à jour inattendu. Le fichier local restera inchangé.",
 	failedToDownloadFromGitHub = "Échec du téléchargement depuis GitHub.",
+	changelog = "Changelog",
 	noUpdatesAvailable = "Aucune mise à jour disponible.",
 	chatGPTSettings = "Paramètres ChatGPT",
 	chatGPTSettingsD = "Paramètres ChatGPT",
@@ -761,7 +1216,8 @@ local frTranslations  = {
 		teamChatNetworked = "Chat d'équipe connecté",
 		globalChatNotNetworked = "Chat global non connecté",
 		globalChatNetworked = "Chat global connecté",
-		notification = "Stand Notification"
+		notification = "Stand Notification",
+		popup = "Popup",
 	},
 	templates = {
 		-- Exemple: "Préréglage d'invite ChatGPT modifié en {arg1} "
@@ -787,6 +1243,7 @@ local zhTranslations  = {
 	failedToUpdate = "无法更新脚本文件。",
 	unexpectedResponse = "意外的更新文件。本地文件将保持不变。",
 	failedToDownloadFromGitHub = "无法从GitHub下载。",
+	changeLog = "更新日志",
 	noUpdatesAvailable = "没有可用的更新。",
 	chatGPTSettings = "ChatGPT 设置",
 	chatGPTSettingsD = "ChatGPT 设置",
@@ -839,7 +1296,8 @@ local zhTranslations  = {
 		teamChatNetworked = "团队聊天已联网",
 		globalChatNotNetworked = "全球聊天未联网",
 		globalChatNetworked = "全球聊天已联网",
-		notification = "Stand通知"
+		notification = "Stand通知",
+		popup = "气泡弹窗",
 	},
 	templates = {
 		-- 示例："ChatGPT 提示预设更改为 {arg1} "
@@ -865,6 +1323,7 @@ local jaTranslations  = {
 	failedToUpdate = "スクリプトファイルの更新に失敗しました。",
 	unexpectedResponse = "予期しない更新ファイル。ローカルファイルは変更されません。",
 	failedToDownloadFromGitHub = "GitHubからのダウンロードに失敗しました。",
+	changeLog = "変更履歴",
 	noUpdatesAvailable = "利用可能な更新はありません。",
 	chatGPTSettings = "ChatGPT設定",
 	chatGPTSettingsD = "ChatGPT設定",
@@ -917,7 +1376,8 @@ local jaTranslations  = {
 		teamChatNetworked = "ネットワーク化されたチームチャット",
 		globalChatNotNetworked = "ネットワーク化されていないグローバルチャット",
 		globalChatNetworked = "ネットワーク化されたグローバルチャット",
-		notification = "スタンド通知"
+		notification = "スタンド通知",
+		popups = "ポップアップ",
 	},
 	templates = {
 		-- 例："ChatGPTプロンプトプリセットが{arg1}に変更されました"
@@ -978,6 +1438,11 @@ local polyglotTranslation = require "src.lib.translation"
 local Config = require("src.lib.config").Config
 local config = Config:new()
 
+local natives = require "src.natives.natives"
+
+---@type CommandRef
+local CommandRef = require("src.docs.CommandRef")
+
 if not async_http.have_access() then
     polyglotUtils.toast(LOC.noInternetAccess)
     util.stop_script()
@@ -1010,74 +1475,6 @@ config.teamChatLabel = util.get_label_text("MP_CHAT_TEAM")
 local focusRef = {}
 local isFocused = false
 
-local HUD = {}
-HUD.GET_HUD_COLOUR = --[[void]] function( --[[int]] hudColorIndex, --[[int* (pointer)]] r, --[[int* (pointer)]] g, --[[int* (pointer)]]
-                                                    b, --[[int* (pointer)]] a)
-    native_invoker.begin_call()
-    native_invoker.push_arg_int(hudColorIndex)
-    native_invoker.push_arg_pointer(r)
-    native_invoker.push_arg_pointer(g)
-    native_invoker.push_arg_pointer(b)
-    native_invoker.push_arg_pointer(a)
-    native_invoker.end_call_2(0x7C9C91AB74A0360F)
-end
-
-local function onIsChatGPTMenuOpen(oldValue, newValue)
-    if oldValue and not newValue then
-        if chatGPTSettingsMenu ~= nil then
-            menu.delete(chatGPTSettingsMenu)
-        end
-    elseif not oldValue and newValue then
-        chatGPTSettingsMenu = menu.list(menu.my_root(), LOC.chatGPTSettings, {},
-            LOC.chatGPTSettingsD)
-
-        local apiKeyInput = menu.text_input(chatGPTSettingsMenu, LOC.apiKeyInput, { "gptkey" },
-            LOC.apiKeyInputD,
-            function(value, click_type)
-                config.apiKey = value
-            end)
-
-        local chatGPTPromptPresetMenu = menu.list_select(chatGPTSettingsMenu, LOC.chatGPTPromptPreset,
-            {},
-            LOC.chatGPTPromptPresetD, polyglotTranslation.getChatGPTPromptPresetsOptions(), 1,
-            function(index, option, prevIndex, click_type)
-                config.chatGPTPromptPreset = option
-                polyglotUtils.toast(LOC.templates.chatGPTPromptChangedTo, config.chatGPTPromptPreset)
-            end)
-
-        --CommandRef|CommandUniqPtr menu.slider_float(CommandRef parent, Label menu_name, table<any, string> command_names, Label help_text, int min_value, int max_value, int default_value, int step_size, function on_change)
-        --Your on_change function will be called with value, prev_value and click_type.
-        --
-        --Note that the float variant is practically identical except the last 2 digits are indicated to be numbers after the decimal point.
-
-        local temperatureSlider = menu.slider_float(chatGPTSettingsMenu, LOC.temperature, {},
-            LOC.temperatureD,
-            0, 200, 100, 10, function(value, prev_value, click_type)
-                config.temperature = value / 100
-            end)
-
-        local topPSlider = menu.slider_float(chatGPTSettingsMenu, LOC.topP, {},
-            LOC.topPD,
-            0, 100, 100, 5, function(value, prev_value, click_type)
-                config.topP = value / 100
-            end)
-
-        local presencePenaltySlider = menu.slider_float(chatGPTSettingsMenu, LOC.presencePenalty, {},
-            LOC.presencePenaltyD,
-            -200, 200, 0, 10, function(value, prev_value, click_type)
-                config.presencePenalty = value / 100
-            end)
-
-        local frequencyPenaltySlider = menu.slider_float(chatGPTSettingsMenu, LOC.frequencyPenalty, {},
-            LOC.frequencyPenaltyD,
-            -200, 200, 0, 10, function(value, prev_value, click_type)
-                config.frequencyPenalty = value / 100
-            end)
-    else
-        return
-    end
-end
-
 menu.toggle(menu.my_root(), LOC.translatorListenerOn, { "translateon" },
     LOC.translatorListenerOnD, function(on)
         config.translateOn = on
@@ -1086,15 +1483,9 @@ menu.toggle(menu.my_root(), LOC.translatorListenerOn, { "translateon" },
 menu.toggle(menu.my_root(), LOC.translateYourself, { "translateself" }, LOC.translateYourselfD, function(on)
     config.translateSelf = on
 end)
-local TranslatedMsgLocationOptions = {
-    LOC.translatedMsgLocationOptions.teamChatNotNetworked,
-    LOC.translatedMsgLocationOptions.teamChatNetworked,
-    LOC.translatedMsgLocationOptions.globalChatNotNetworked,
-    LOC.translatedMsgLocationOptions.globalChatNetworked,
-    LOC.translatedMsgLocationOptions.notification
-}
-local translatedMsgLocationMenu = menu.list_select(menu.my_root(), LOC.translatedMessageDisplay, {},
-    LOC.translatedMessageDisplayD, TranslatedMsgLocationOptions, 5,
+
+menu.my_root():list_select(LOC.translatedMessageDisplay, {},
+    LOC.translatedMessageDisplayD, config.TranslatedMsgLocationOptions, #config.TranslatedMsgLocationOptions,
     function(index, option, prevIndex, clickType)
         config.translatedMsgLocation = index
     end)
@@ -1119,7 +1510,7 @@ end)
 for i = 1, 234 do
     focusRef[i] = menu.action(colorTranslation, "Color : " .. i, {}, "", function()
         menu.set_menu_name(selectMenu, "Selected : " .. "Color : " .. i)
-        colorSelect = i
+        config.colorSelect = i
     end)
     menu.on_focus(focusRef[i], function()
         isFocused = false
@@ -1133,7 +1524,7 @@ for i = 1, 234 do
             ptr2 = memory.alloc()
             ptr3 = memory.alloc()
             ptr4 = memory.alloc()
-            HUD.GET_HUD_COLOUR(i, ptr1, ptr2, ptr3, ptr4)
+            natives.HUD.GET_HUD_COLOUR(i, ptr1, ptr2, ptr3, ptr4)
             directx.draw_text(0.5, 0.5, "example", 5, 0.75,
                 {
                     r = memory.read_int(ptr1) / 255,
@@ -1188,20 +1579,10 @@ end
 
 local translationMethodMenu = menu.list(menu.my_root(), LOC.translationMethod, {}, LOC.translationMethodD)
 
-local chatGPTCounter = 0
-local isChatGPTMenuOpen = false
 
-local function handleTranslationMethodChange(option)
-    chatGPTCounter = (option == "ChatGPT") and (chatGPTCounter + 1) or (chatGPTCounter - 1)
-    local oldvalue = isChatGPTMenuOpen
-    isChatGPTMenuOpen = chatGPTCounter > 0
-    onIsChatGPTMenuOpen(oldvalue, isChatGPTMenuOpen)
-end
-
-local translationMethodIncomingMenu = menu.list_select(translationMethodMenu, LOC.incomingMessages, {},
+translationMethodMenu:list_select(LOC.incomingMessages, {},
     LOC.incomingMessagesD, config.TranslationMethodOptions, 1,
     function(index, option, prevIndex, clickType)
-        handleTranslationMethodChange(option)
         polyglotUtils.toast(LOC.templates.translationMethodIncomingChangedTo, option)
         config.translationMethodIncoming = option
     end)
@@ -1209,25 +1590,26 @@ local translationMethodIncomingMenu = menu.list_select(translationMethodMenu, LO
 local translationMethodOutgoingMenu = menu.list_select(translationMethodMenu, LOC.outgoingMessages, {},
     LOC.outgoingMessagesD, config.TranslationMethodOptions, 1,
     function(index, option, prevIndex, clickType)
-        handleTranslationMethodChange(option)
         polyglotUtils.toast(LOC.templates.translationMethodOutgoingChangedTo, option)
         config.translationMethodOutgoing = option
     end)
 
-local targetLanguageIncomingMenu = menu.list_select(menu.my_root(), LOC.targetLanguageIncoming, { "inlang" }, LOC.targetLanguageIncomingD,
+local targetLanguageIncomingMenu = menu.list_select(menu.my_root(), LOC.targetLanguageIncoming, { "inlang" },
+    LOC.targetLanguageIncomingD,
     config.LangNameList, 1, function(index, option, prevIndex, clickType)
         config.targetLanguageIncoming = config.LangLookupByName[option]
     end)
 
+---@type CommandRef
 local translateMyMsg = menu.list(menu.my_root(), LOC.sendTranslatedMessage)
 
-local targetLanguageOutgoingMenu = menu.list_select(translateMyMsg, LOC.targetLanguageOutgoing, { "outlang" },
+translateMyMsg:list_select(LOC.targetLanguageOutgoing, { "outlang" },
     LOC.targetLanguageOutgoingD, config.LangNameList, 1,
     function(index, option, prevIndex, clickType)
         config.targetLanguageOutgoing = config.LangLookupByName[option]
     end)
 
-menu.action(translateMyMsg, LOC.sendMessage, { "Sendmessage" }, LOC.sendMessageD, function(on_click)
+translateMyMsg:action(LOC.sendMessage, { "Sendmessage" }, LOC.sendMessageD, function(on_click)
     polyglotUtils.toast(LOC.inputMessage)
     menu.show_command_box("Sendmessage ")
 end, function(on_command)
@@ -1241,5 +1623,51 @@ end)
 --         -- Do stuff...
 --     end)
 chat.on_message(polyglotChat.createOnMessageCallback(config, polyglotTranslation.translateText))
+
+local chatGPTSettingsMenu = menu.list(menu.my_root(), LOC.chatGPTSettings, {},
+    LOC.chatGPTSettingsD)
+
+chatGPTSettingsMenu:text_input(LOC.apiKeyInput, { "gptkey" },
+    LOC.apiKeyInputD,
+    function(value, click_type)
+        config.apiKey = value
+    end)
+
+chatGPTSettingsMenu:list_select(LOC.chatGPTPromptPreset,
+    {},
+    LOC.chatGPTPromptPresetD, polyglotTranslation.getChatGPTPromptPresetsOptions(), 1,
+    function(index, option, prevIndex, click_type)
+        config.chatGPTPromptPreset = option
+        polyglotUtils.toast(LOC.templates.chatGPTPromptChangedTo, config.chatGPTPromptPreset)
+    end)
+
+--CommandRef|CommandUniqPtr menu.slider_float(CommandRef parent, Label menu_name, table<any, string> command_names, Label help_text, int min_value, int max_value, int default_value, int step_size, function on_change)
+--Your on_change function will be called with value, prev_value and click_type.
+--
+--Note that the float variant is practically identical except the last 2 digits are indicated to be numbers after the decimal point.
+
+chatGPTSettingsMenu:slider_float(LOC.temperature, {},
+    LOC.temperatureD,
+    0, 200, 100, 10, function(value, prev_value, click_type)
+        config.temperature = value / 100
+    end)
+
+chatGPTSettingsMenu:slider_float(LOC.topP, {},
+    LOC.topPD,
+    0, 100, 100, 5, function(value, prev_value, click_type)
+        config.topP = value / 100
+    end)
+
+chatGPTSettingsMenu:slider_float(LOC.presencePenalty, {},
+    LOC.presencePenaltyD,
+    -200, 200, 0, 10, function(value, prev_value, click_type)
+        config.presencePenalty = value / 100
+    end)
+
+chatGPTSettingsMenu:slider_float(LOC.frequencyPenalty, {},
+    LOC.frequencyPenaltyD,
+    -200, 200, 0, 10, function(value, prev_value, click_type)
+        config.frequencyPenalty = value / 100
+    end)
  end)
 local menus = require "src.lib.menus"
