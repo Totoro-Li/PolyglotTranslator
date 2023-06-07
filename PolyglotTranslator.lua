@@ -1,12 +1,13 @@
 --[[ --- START OF VERSION ---
 MAJOR:1
 MINOR:3
-PATCH:1
+PATCH:2
 CHANGELOG
 - Fixed "Attempt to yield across a C-call boundary" error caused in bugs of ScaleformLib, now this library is no longer needed.
 - Fixed bugs in loading script, which causes settings to revert to default.
 - Fixed failure to load custom colors for message rendering.
 - Added Polyglot Popup as another presentation mode for message, which is still under development to draw DirectX for input and presentation.
+- Added Russian language support for localization.
 --- END OF VERSION --- ]]
 
 -- LEGACY
@@ -1382,13 +1383,95 @@ local jaTranslations  = {
 		customLabelForAllTranslation = "[{arg1}]翻訳のカスタムラベル"
 	}
 }
-local languages       = { "en", "es", "fr", "zh", "ja" }
+
+local ruTranslations = {
+	noInternetAccess = "Это скрипт Polyglot Translator, пожалуйста, включите доступ в интернет",
+	checkForUpdates = "Проверить обновления",
+	checkForUpdatesD = "Проверить обновления для Polyglot Translator",
+	updateInProgress = "Обновление в процессе...",
+	updating = "Обновляю...",
+	failedToUpdate = "Не удалось обновить файл скрипта.",
+	unexpectedResponse = "Неожиданное обновление файла. Локальный файл останется неизменным.",
+	failedToDownloadFromGitHub = "Ошибка обновления с GitHub.",
+	changelog = "Изменения",
+	noUpdatesAvailable = "Обновлений не найдено.",
+	chatGPTSettings = "Настройки ChatGPT",
+	chatGPTSettingsD = "Настройки ChatGPT",
+	apiKeyInput = "Ключ API",
+	apiKeyInputD = "Введите свой ключ API",
+	chatGPTPromptPreset = "Предустановки ChatGPT",
+	chatGPTPromptPresetD = "Выберите предварительную настройку подсказки для ChatGPT",
+	temperature = "Температура",
+	temperatureD =
+	"Какая температура выборки будет использоваться, от 0 до 2. Более высокие значения, например 0,8, сделают вывод более случайным, а более низкие, например 0,2, сделают его более целенаправленным и детерминированным. Обычно рекомендуется изменять либо это значение, либо верхнее p, но не оба. (По умолчанию: 1)",
+	topP = "Top P",
+	topPD =
+	"Число от 0 до 1. Альтернатива выборке с температурой, называемой выборкой по ядру, когда модель рассматривает результаты токенов, имеющих верхнюю p-ю вероятностную массу. Таким образом, 0,1 означает, что рассматриваются только лексемы, составляющие верхние 10% вероятностной массы. Обычно мы рекомендуем изменять этот параметр или температуру, но не оба. (По умолчанию: 1)",
+	presencePenalty = "Наказание за присутствие",
+	presencePenaltyD =
+	"Число между -2,0 и 2,0. Положительные значения штрафуют новые лексемы на основе того, появляются ли они в тексте до сих пор, увеличивая вероятность того, что модель будет говорить о новых темах. (По умолчанию: 0)",
+	frequencyPenalty = "Частота штрафа",
+	frequencyPenaltyD =
+	"Число между -2,0 и 2,0. Положительные значения штрафуют новые лексемы на основе их существующей частоты в тексте, уменьшая вероятность того, что модель будет повторять одну и ту же строку дословно. (По умолчанию: 0)",
+
+	translatorListenerOn = "Активировать переводчик",
+	translatorListenerOnD = "Переводчик будет видеть входящие сообщения и переводить",
+	translateYourself = "Перевод собственных сообщений",
+	translateYourselfD = "Переводить сообщения, отправленные самим собой",
+	translatedMessageDisplay = "Переведённые сообщения на экране",
+	translatedMessageDisplayD = "Расположение переведенного сообщения. Необходимо нажать, чтобы применить изменения",
+	scriptSettings = "Другие настройки для переводчика-полиглота",
+	scriptSettingsD = "Включая настройки цвета и обновления",
+	playerNameColor = "Цвет имени игроков",
+	customLabelForTeamTranslationD = "Оставляя это пустым, вы вернете его к оригинальной метке",
+	customLabelForAllTranslationD = "Если оставить его пустым, то он вернется к исходной метке",
+	translatorListenerBlacklist = "Чёрный список языков переводчика",
+	translatorListenerBlacklistD = "Игнорировать сообщения на языках, включенных в этом списке",
+	translationMethod = "Метод перевода",
+	translationMethodD = "Выберите метод перевода",
+	incomingMessages = "Входящие сообщения",
+	incomingMessagesD = "Выберите метод перевода для входящих сообщений",
+	outgoingMessages = "Исходящие сообщения",
+	outgoingMessagesD = "Выберите метод перевода для исходящих сообщений",
+	targetLanguageIncoming = "Входящий целевой язык",
+	targetLanguageIncomingD = "Язык, на который будут переводиться входящие сообщения. Для применения изменений необходимо нажать кнопку",
+	sendTranslatedMessage = "Отправить переведенное сообщение",
+	targetLanguageOutgoing = "Исходящий целевой язык",
+	targetLanguageOutgoingD = "Язык, на который будут переводиться ваши сообщения. Вам нужно нажать кнопку , чтобы применить изменения",
+	sendMessage = "Отправить сообщение",
+	sendMessageD = "Введите текст сообщения",
+	inputMessage = "Пожалуйста введите сообщение",
+	translatedMsgLocationOptions = {
+		teamChatNotNetworked = "Чат организации (сеть без подключения)",
+		teamChatNetworked = "Чат организации (сеть)",
+		globalChatNotNetworked = "Чат виден всем (сеть без подключения)",
+		globalChatNetworked = "Чат виден всем (сеть)",
+		notification = "Уведомления",
+		popup = "Всплывающее окно",
+	},
+	templates = {
+		-- Example: "ChatGPT Prompt Preset changed to {arg1} "
+		updateSuccessful = "Обновление успешно, текущая версия: {arg1}",
+		apiKeyNotSet = "API не установлен. Пожалуйста введите API в настройках",
+		errorTranslating = "Ошибка перевода, Оригинальное сообщение: {arg1}, Код статуса: {arg2}",
+		errorConnectingToChatGPTAPI = "Ошибка подключения к ChatGPT API",
+		chatGPTPromptChangedTo = "ChatGPT Предварительная установка подсказки изменена на {arg1}",
+		selectedColor = "Выбранный цвет: {arg1}",
+		customLabelForTeamTranslation = "Пользовательская метка для [{arg1}] перевода",
+		customLabelForAllTranslation = "Пользовательская метка для [{arg1}] перевода",
+		translationMethodIncomingChangedTo = "Метод входящего перевода изменён на  {arg1}",
+		translationMethodOutgoingChangedTo = "Метод исходящего перевода изменён на {arg1}"
+	}
+}
+
+local languages       = { "en", "es", "fr", "zh", "ja", "ru" }
 local translations    = {
 	en = engTranslations,
 	es = esTranslations,
 	fr = frTranslations,
 	zh = zhTranslations,
-	ja = jaTranslations
+	ja = jaTranslations,
+	ru = ruTranslations
 }
 function merge(t1, t2)
 	for k, v in pairs(t2) do
