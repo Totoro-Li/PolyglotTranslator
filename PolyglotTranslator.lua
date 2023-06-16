@@ -16,216 +16,6 @@ CHANGELOG
     minor = 9,
     patch = 9
 } ]]
-package.preload['src.docs.CommandRef'] = (function (...)
-					local _ENV = _ENV;
-					local function module(name, ...)
-						local t = package.loaded[name] or _ENV[name] or { _NAME = name };
-						package.loaded[name] = t;
-						for i = 1, select("#", ...) do
-							(select(i, ...))(t);
-						end
-						_ENV = t;
-						_M = t;
-						return t;
-					end
-				---@class CommandRef
-local CommandRef = {}
-
----@type boolean
-CommandRef.visible = nil
-
----@type any
-CommandRef.value = nil
-
----@type number
-CommandRef.min_value = nil
-
----@type number
-CommandRef.max_value = nil
-
----@type number
-CommandRef.step_size = nil
-
----@type number
-CommandRef.precision = nil
-
----@type string
-CommandRef.indicator_type = nil
-
----@type any
-CommandRef.target = nil
-
----@return boolean
-function CommandRef:isValid() end
-
----@return CommandRef
-function CommandRef:refByRelPath() end
-
-function CommandRef:delete() end
-
-function CommandRef:detach() end
-
-function CommandRef:attach(...) end
-
-function CommandRef:attachAfter(...) end
-
-function CommandRef:attachBefore(...) end
-
-function CommandRef:focus() end
-
----@return boolean
-function CommandRef:isFocused() end
-
----@return table
-function CommandRef:getApplicablePlayers() end
-
----@return any
-function CommandRef:getParent() end
-
----@return string
-function CommandRef:getType() end
-
----@return table
-function CommandRef:getChildren() end
-
-function CommandRef:trigger() end
-
-function CommandRef:onTickInViewport(...) end
-
-function CommandRef:onFocus(...) end
-
-function CommandRef:onBlur(...) end
-
-function CommandRef:removeHandler(...) end
-
----@return any
-function CommandRef:getState() end
-
----@return any
-function CommandRef:getDefaultState() end
-
-function CommandRef:applyDefaultState() end
-
-function CommandRef:setListActionOptions(...) end
-
-function CommandRef:setTextsliderOptions(...) end
-
-function CommandRef:addValueReplacement(...) end
-
-function CommandRef:setTemporary() end
-
-function CommandRef:list(...) end
-
-function CommandRef:action(...) end
-
-function CommandRef:toggle(...) end
-
-function CommandRef:toggle_loop(...) end
-
-function CommandRef:slider(...) end
-
-function CommandRef:slider_float(...) end
-
-function CommandRef:click_slider(...) end
-
-function CommandRef:click_slider_float(...) end
-
-function CommandRef:list_select(...) end
-
-function CommandRef:list_action(...) end
-
-function CommandRef:text_input(...) end
-
-function CommandRef:colour(...) end
-
-function CommandRef:rainbow(...) end
-
-function CommandRef:divider(...) end
-
-function CommandRef:readonly(...) end
-
-function CommandRef:hyperlink(...) end
-
-function CommandRef:textslider(...) end
-
-function CommandRef:textslider_stateful(...) end
-
-function CommandRef:link(...) end
-
----@class CommandUniqPtr
-local CommandUniqPtr = {}
-
-function CommandUniqPtr:ref() end
-
-return CommandRef
- end)
-package.preload['src.natives.natives'] = (function (...)
-					local _ENV = _ENV;
-					local function module(name, ...)
-						local t = package.loaded[name] or _ENV[name] or { _NAME = name };
-						package.loaded[name] = t;
-						for i = 1, select("#", ...) do
-							(select(i, ...))(t);
-						end
-						_ENV = t;
-						_M = t;
-						return t;
-					end
-				local HUD = {
-    ["GET_HUD_COLOUR"]=--[[void]] function(--[[int]] hudColorIndex,--[[int* (pointer)]] r,--[[int* (pointer)]] g,--[[int* (pointer)]] b,--[[int* (pointer)]] a)native_invoker.begin_call()native_invoker.push_arg_int(hudColorIndex)native_invoker.push_arg_pointer(r)native_invoker.push_arg_pointer(g)native_invoker.push_arg_pointer(b)native_invoker.push_arg_pointer(a)native_invoker.end_call_2(0x7C9C91AB74A0360F)end,
-}
-
-local GRAPHICS = {
-    ["REQUEST_SCALEFORM_MOVIE"]=--[[int]] function(--[[string]] scaleformName)native_invoker.begin_call()native_invoker.push_arg_string(scaleformName)native_invoker.end_call_2(0x11FE353CF9733E6F)return native_invoker.get_return_value_int()end,
-    ["HAS_SCALEFORM_MOVIE_LOADED"]=--[[BOOL (bool)]] function(--[[int]] scaleformHandle)native_invoker.begin_call()native_invoker.push_arg_int(scaleformHandle)native_invoker.end_call_2(0x85F01B8D5B90570E)return native_invoker.get_return_value_bool()end,
-    ["DRAW_SCALEFORM_MOVIE_FULLSCREEN"]=--[[void]] function(--[[int]] scaleform,--[[int]] red,--[[int]] green,--[[int]] blue,--[[int]] alpha,--[[int]] unk)native_invoker.begin_call()native_invoker.push_arg_int(scaleform)native_invoker.push_arg_int(red)native_invoker.push_arg_int(green)native_invoker.push_arg_int(blue)native_invoker.push_arg_int(alpha)native_invoker.push_arg_int(unk)native_invoker.end_call_2(0x0DF606929C105BE1)end,
-    ["BEGIN_SCALEFORM_MOVIE_METHOD"]=--[[BOOL (bool)]] function(--[[int]] scaleform,--[[string]] methodName)native_invoker.begin_call()native_invoker.push_arg_int(scaleform)native_invoker.push_arg_string(methodName)native_invoker.end_call_2(0xF6E48914C7A8694E)return native_invoker.get_return_value_bool()end,
-    ["SCALEFORM_MOVIE_METHOD_ADD_PARAM_INT"]=--[[void]] function(--[[int]] value)native_invoker.begin_call()native_invoker.push_arg_int(value)native_invoker.end_call_2(0xC3D0841A0CC546A6)end,
-    ["END_SCALEFORM_MOVIE_METHOD"]=--[[void]] function()native_invoker.begin_call()native_invoker.end_call_2(0xC6796A8FFA375E53)end,
-    -- Pushes an integer for the Scaleform function onto the stack.
-	["SCALEFORM_MOVIE_METHOD_ADD_PARAM_INT"]=--[[void]] function(--[[int]] value)native_invoker.begin_call()native_invoker.push_arg_int(value)native_invoker.end_call_2(0xC3D0841A0CC546A6)end,
-	-- Pushes a float for the Scaleform function onto the stack.
-	["SCALEFORM_MOVIE_METHOD_ADD_PARAM_FLOAT"]=--[[void]] function(--[[float]] value)native_invoker.begin_call()native_invoker.push_arg_float(value)native_invoker.end_call_2(0xD69736AAE04DB51A)end,
-	-- Pushes a boolean for the Scaleform function onto the stack.
-	["SCALEFORM_MOVIE_METHOD_ADD_PARAM_BOOL"]=--[[void]] function(--[[BOOL (bool)]] value)native_invoker.begin_call()native_invoker.push_arg_bool(value)native_invoker.end_call_2(0xC58424BA936EB458)end,
-	-- Called prior to adding a text component to the UI. After doing so, GRAPHICS::END_TEXT_COMMAND_SCALEFORM_STRING is called.
-	-- 
-	-- Examples:
-	-- GRAPHICS::BEGIN_TEXT_COMMAND_SCALEFORM_STRING("NUMBER");
-	-- HUD::ADD_TEXT_COMPONENT_INTEGER(MISC::ABSI(a_1));
-	-- GRAPHICS::END_TEXT_COMMAND_SCALEFORM_STRING();
-	-- 
-	-- GRAPHICS::BEGIN_TEXT_COMMAND_SCALEFORM_STRING("STRING");
-	-- HUD::_ADD_TEXT_COMPONENT_STRING(a_2);
-	-- GRAPHICS::END_TEXT_COMMAND_SCALEFORM_STRING();
-	-- 
-	-- GRAPHICS::BEGIN_TEXT_COMMAND_SCALEFORM_STRING("STRTNM2");
-	-- HUD::_0x17299B63C7683A2B(v_3);
-	-- HUD::_0x17299B63C7683A2B(v_4);
-	-- GRAPHICS::END_TEXT_COMMAND_SCALEFORM_STRING();
-	-- 
-	-- GRAPHICS::BEGIN_TEXT_COMMAND_SCALEFORM_STRING("STRTNM1");
-	-- HUD::_0x17299B63C7683A2B(v_3);
-	-- GRAPHICS::END_TEXT_COMMAND_SCALEFORM_STRING();
-	["BEGIN_TEXT_COMMAND_SCALEFORM_STRING"]=--[[void]] function(--[[string]] componentType)native_invoker.begin_call()native_invoker.push_arg_string(componentType)native_invoker.end_call_2(0x80338406F3475E55)end,
-	["END_TEXT_COMMAND_SCALEFORM_STRING"]=--[[void]] function()native_invoker.begin_call()native_invoker.end_call_2(0x362E2D3FE93A9959)end,
-	-- Same as END_TEXT_COMMAND_SCALEFORM_STRING but does not perform HTML conversion for text tokens.
-	-- 
-	-- END_TEXT_COMMAND_VIA_SPECIAL_MODIFIABLE_STRING?
-	["END_TEXT_COMMAND_UNPARSED_SCALEFORM_STRING"]=--[[void]] function()native_invoker.begin_call()native_invoker.end_call_2(0xAE4E8157D9ECF087)end,
-	-- Same as SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING
-	-- Both SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING / _SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING_2 works, but _SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING_2 is usually used for "name" (organisation, players..).
-	["SCALEFORM_MOVIE_METHOD_ADD_PARAM_LITERAL_STRING"]=--[[void]] function(--[[string]] string)native_invoker.begin_call()native_invoker.push_arg_string(string)native_invoker.end_call_2(0x77FE3402004CD1B0)end,
-	["SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING"]=--[[void]] function(--[[string]] string)native_invoker.begin_call()native_invoker.push_arg_string(string)native_invoker.end_call_2(0xBA7148484BD90365)end,
-	["SCALEFORM_MOVIE_METHOD_ADD_PARAM_PLAYER_NAME_STRING"]=--[[void]] function(--[[string]] string)native_invoker.begin_call()native_invoker.push_arg_string(string)native_invoker.end_call_2(0xE83A3E3557A56640)end,
-}
-
--- Export entire namespace
-return {
-    HUD = HUD,
-    GRAPHICS = GRAPHICS
-}
- end)
 package.preload['src.lib.utils'] = (function (...)
 					local _ENV = _ENV;
 					local function module(name, ...)
@@ -284,6 +74,24 @@ function moduleExports.toast(template, ...)
     util.toast(result, TOAST_ALL)
 end
 
+function moduleExports.debugLog(message)
+    if Config.debugMode then
+        local formattedMessage = string.format("[%s] %s", SCRIPT_NAME, message)
+        util.toast(formattedMessage)
+        util.log(formattedMessage)
+    end
+end
+
+function moduleExports.extractJSON(responseText)
+    local jsonStr = responseText:match("(%b{})")
+    return jsonStr and json.decode(jsonStr) or nil
+end
+
+function moduleExports.isJSON(text)
+    local jsonStr = text:match("(%b{})")
+    return jsonStr ~= nil
+end
+
 return moduleExports
  end)
 package.preload['src.lib.updater'] = (function (...)
@@ -298,8 +106,7 @@ package.preload['src.lib.updater'] = (function (...)
 						_M = t;
 						return t;
 					end
-				local LOC = require "src.lib.localization"
-local polyglotUtils = require "src.lib.utils"
+				
 local moduleExports = {}
 
 local mainGitHubPath = "/Totoro-Li/PolyglotTranslator/main/"
@@ -336,8 +143,8 @@ end
 
 local function isUpdateNeeded(currentVersion, newVersion)
     if not newVersion then return false end
-    util.log("Current version: " .. currentVersion.major .. "." .. currentVersion.minor .. "." .. currentVersion.patch)
-    util.log("New version: " .. newVersion.major .. "." .. newVersion.minor .. "." .. newVersion.patch)
+    polyglotUtils.debugLog("Current version: " .. currentVersion.major .. "." .. currentVersion.minor .. "." .. currentVersion.patch)
+    polyglotUtils.debugLog("New version: " .. newVersion.major .. "." .. newVersion.minor .. "." .. newVersion.patch)
 
     if newVersion.major > currentVersion.major or
         (newVersion.major == currentVersion.major and newVersion.minor > currentVersion.minor) or
@@ -413,65 +220,6 @@ end
 
 return moduleExports
  end)
-package.preload['src.lib.config'] = (function (...)
-					local _ENV = _ENV;
-					local function module(name, ...)
-						local t = package.loaded[name] or _ENV[name] or { _NAME = name };
-						package.loaded[name] = t;
-						for i = 1, select("#", ...) do
-							(select(i, ...))(t);
-						end
-						_ENV = t;
-						_M = t;
-						return t;
-					end
-				-- package.loaded["src.lib.config"] = nil
-local polyglotTranslation = require("src.lib.translation")
-local polyglotChat = require("src.lib.chat")
-local Config = {}
-
-Config.__index = function(self, key)
-    if key == "LangKeyList" then
-        return polyglotTranslation.getLangKeyList()
-    elseif key == "LangNameList" then
-        return polyglotTranslation.getLangNameList()
-    elseif key == "LangLookupByKey" then
-        return polyglotTranslation.getLangLookupByKey()
-    elseif key == "LangLookupByName" then
-        return polyglotTranslation.getLangLookupByName()
-    elseif key == "TranslationMethodOptions" then
-        return polyglotTranslation.getTranslationMethodOptions()
-    elseif key == "TranslatedMsgLocationOptions" then
-        return polyglotChat.getTranslatedMsgLocationOptions()
-    else
-        return rawget(self, key)
-    end
-end
-
-function Config:get(key)
-    return self[key]
-end
-
-function Config:set(key, value)
-    rawset(self, key, value)
-end
-
-Config.__newindex = function(self, key, value)
-    -- TODO: Additional logic for setting values
-    return Config.set(self, key, value)
-end
-
-function Config:new()
-    local newConfig = {}
-    setmetatable(newConfig, self)
-    return newConfig
-end
-
-local moduleExports = {}
-moduleExports.Config = Config
-
-return moduleExports
- end)
 package.preload['src.lib.translation'] = (function (...)
 					local _ENV = _ENV;
 					local function module(name, ...)
@@ -486,224 +234,331 @@ package.preload['src.lib.translation'] = (function (...)
 					end
 				-- package.loaded["src.lib.translation"] = nil
 local moduleExports = {}
-local polyglotUtils = require "src.lib.utils"
-local polyglotLocalization = require "src.lib.localization"
 
 local Languages = {
-    { Name = "Afrikaans",           Key = "af" },
-    { Name = "Albanian",            Key = "sq" },
-    { Name = "Arabic",              Key = "ar" },
-    { Name = "Azerbaijani",         Key = "az" },
-    { Name = "Basque",              Key = "eu" },
-    { Name = "Belarusian",          Key = "be" },
-    { Name = "Bengali",             Key = "bn" },
-    { Name = "Bulgarian",           Key = "bg" },
-    { Name = "Catalan",             Key = "ca" },
-    { Name = "Chinese Simplified",  Key = "zh-cn" },
-    { Name = "Chinese Traditional", Key = "zh-tw" },
-    { Name = "Croatian",            Key = "hr" },
-    { Name = "Czech",               Key = "cs" },
-    { Name = "Danish",              Key = "da" },
-    { Name = "Dutch",               Key = "nl" },
-    { Name = "English",             Key = "en" },
-    { Name = "Esperanto",           Key = "eo" },
-    { Name = "Estonian",            Key = "et" },
-    { Name = "Filipino",            Key = "tl" },
-    { Name = "Finnish",             Key = "fi" },
-    { Name = "French",              Key = "fr" },
-    { Name = "Galician",            Key = "gl" },
-    { Name = "Georgian",            Key = "ka" },
-    { Name = "German",              Key = "de" },
-    { Name = "Greek",               Key = "el" },
-    { Name = "Gujarati",            Key = "gu" },
-    { Name = "Haitian Creole",      Key = "ht" },
-    { Name = "Hebrew",              Key = "iw" },
-    { Name = "Hindi",               Key = "hi" },
-    { Name = "Hungarian",           Key = "hu" },
-    { Name = "Icelandic",           Key = "is" },
-    { Name = "Indonesian",          Key = "id" },
-    { Name = "Irish",               Key = "ga" },
-    { Name = "Italian",             Key = "it" },
-    { Name = "Japanese",            Key = "ja" },
-    { Name = "Kannada",             Key = "kn" },
-    { Name = "Korean",              Key = "ko" },
-    { Name = "Latin",               Key = "la" },
-    { Name = "Latvian",             Key = "lv" },
-    { Name = "Lithuanian",          Key = "lt" },
-    { Name = "Macedonian",          Key = "mk" },
-    { Name = "Malay",               Key = "ms" },
-    { Name = "Maltese",             Key = "mt" },
-    { Name = "Norwegian",           Key = "no" },
-    { Name = "Persian",             Key = "fa" },
-    { Name = "Polish",              Key = "pl" },
-    { Name = "Portuguese",          Key = "pt" },
-    { Name = "Romanian",            Key = "ro" },
-    { Name = "Russian",             Key = "ru" },
-    { Name = "Serbian",             Key = "sr" },
-    { Name = "Slovak",              Key = "sk" },
-    { Name = "Slovenian",           Key = "sl" },
-    { Name = "Spanish",             Key = "es" },
-    { Name = "Swahili",             Key = "sw" },
-    { Name = "Swedish",             Key = "sv" },
-    { Name = "Tamil",               Key = "ta" },
-    { Name = "Telugu",              Key = "te" },
-    { Name = "Thai",                Key = "th" },
-    { Name = "Turkish",             Key = "tr" },
-    { Name = "Ukrainian",           Key = "uk" },
-    { Name = "Urdu",                Key = "ur" },
-    { Name = "Vietnamese",          Key = "vi" },
-    { Name = "Welsh",               Key = "cy" },
-    { Name = "Yiddish",             Key = "yi" },
-}
+    {
+        Name = "Afrikaans",
+        Key = "af"
+    }, {
+        Name = "Albanian",
+        Key = "sq"
+    }, {
+        Name = "Arabic",
+        Key = "ar"
+    }, {
+        Name = "Azerbaijani",
+        Key = "az"
+    }, {
+        Name = "Basque",
+        Key = "eu"
+    }, {
+        Name = "Belarusian",
+        Key = "be"
+    }, {
+        Name = "Bengali",
+        Key = "bn"
+    }, {
+        Name = "Bulgarian",
+        Key = "bg"
+    }, {
+        Name = "Catalan",
+        Key = "ca"
+    }, {
+        Name = "Chinese Simplified",
+        Key = "zh-cn"
+    }, {
+        Name = "Chinese Traditional",
+        Key = "zh-tw"
+    }, {
+        Name = "Croatian",
+        Key = "hr"
+    }, {
+        Name = "Czech",
+        Key = "cs"
+    }, {
+        Name = "Danish",
+        Key = "da"
+    }, {
+        Name = "Dutch",
+        Key = "nl"
+    }, {
+        Name = "English",
+        Key = "en"
+    }, {
+        Name = "Esperanto",
+        Key = "eo"
+    }, {
+        Name = "Estonian",
+        Key = "et"
+    }, {
+        Name = "Filipino",
+        Key = "tl"
+    }, {
+        Name = "Finnish",
+        Key = "fi"
+    }, {
+        Name = "French",
+        Key = "fr"
+    }, {
+        Name = "Galician",
+        Key = "gl"
+    }, {
+        Name = "Georgian",
+        Key = "ka"
+    }, {
+        Name = "German",
+        Key = "de"
+    }, {
+        Name = "Greek",
+        Key = "el"
+    }, {
+        Name = "Gujarati",
+        Key = "gu"
+    }, {
+        Name = "Haitian Creole",
+        Key = "ht"
+    }, {
+        Name = "Hebrew",
+        Key = "iw"
+    }, {
+        Name = "Hindi",
+        Key = "hi"
+    }, {
+        Name = "Hungarian",
+        Key = "hu"
+    }, {
+        Name = "Icelandic",
+        Key = "is"
+    }, {
+        Name = "Indonesian",
+        Key = "id"
+    }, {
+        Name = "Irish",
+        Key = "ga"
+    }, {
+        Name = "Italian",
+        Key = "it"
+    }, {
+        Name = "Japanese",
+        Key = "ja"
+    }, {
+        Name = "Kannada",
+        Key = "kn"
+    }, {
+        Name = "Korean",
+        Key = "ko"
+    }, {
+        Name = "Latin",
+        Key = "la"
+    }, {
+        Name = "Latvian",
+        Key = "lv"
+    }, {
+        Name = "Lithuanian",
+        Key = "lt"
+    }, {
+        Name = "Macedonian",
+        Key = "mk"
+    }, {
+        Name = "Malay",
+        Key = "ms"
+    }, {
+        Name = "Maltese",
+        Key = "mt"
+    }, {
+        Name = "Norwegian",
+        Key = "no"
+    }, {
+        Name = "Persian",
+        Key = "fa"
+    }, {
+        Name = "Polish",
+        Key = "pl"
+    }, {
+        Name = "Portuguese",
+        Key = "pt"
+    }, {
+        Name = "Romanian",
+        Key = "ro"
+    }, {
+        Name = "Russian",
+        Key = "ru"
+    }, {
+        Name = "Serbian",
+        Key = "sr"
+    }, {
+        Name = "Slovak",
+        Key = "sk"
+    }, {
+        Name = "Slovenian",
+        Key = "sl"
+    }, {
+        Name = "Spanish",
+        Key = "es"
+    }, {
+        Name = "Swahili",
+        Key = "sw"
+    }, {
+        Name = "Swedish",
+        Key = "sv"
+    }, {
+        Name = "Tamil",
+        Key = "ta"
+    }, {
+        Name = "Telugu",
+        Key = "te"
+    }, {
+        Name = "Thai",
+        Key = "th"
+    }, {
+        Name = "Turkish",
+        Key = "tr"
+    }, {
+        Name = "Ukrainian",
+        Key = "uk"
+    }, {
+        Name = "Urdu",
+        Key = "ur"
+    }, {
+        Name = "Vietnamese",
+        Key = "vi"
+    }, {
+        Name = "Welsh",
+        Key = "cy"
+    }, {
+        Name = "Yiddish",
+        Key = "yi"
+    }}
 
-local LangPairs = {} -- Aux for sorting
-local LangKeyList = {}
-local LangNameList = {}
-local LangLookupByName = {}
-local LangLookupByKey = {}
+LangPairs = {} -- Aux for sorting
+LangKeyList = {}
+LangNameList = {}
+LangLookupByName = {}
+LangLookupByKey = {}
 
 for i = 1, #Languages do
     local Language = Languages[i]
-    LangPairs[i] = { key = Language.Key, name = Language.Name }
+    LangPairs[i] = {
+        key = Language.Key,
+        name = Language.Name
+    }
     LangLookupByName[Language.Name] = Language.Key
     LangLookupByKey[Language.Key] = Language.Name
 end
 
-table.sort(LangPairs, function(a, b)
-    return a.name < b.name
-end)
+table.sort(LangPairs, function(a, b) return a.name < b.name end)
 
 for i = 1, #LangPairs do
     LangKeyList[i] = LangPairs[i].key
     LangNameList[i] = LangPairs[i].name
 end
 
-function moduleExports.getLangNameList()
-    return LangNameList
-end
-
-function moduleExports.getLangKeyList()
-    return LangKeyList
-end
-
-function moduleExports.getLangLookupByKey()
-    return LangLookupByKey
-end
-
-function moduleExports.getLangLookupByName()
-    return LangLookupByName
-end
-
-local chatGPTPromptPresets = {
-    ["Basic"] = "You are a professional translation engine, please translate the following text into {lang}: {text}",
-    ["Cute with Emoticons"] = "You are a professional translation engine, please translate the following text into {lang}, in the style of game message scenario with cute emoticons, Internet slang and without the style of machine translation: {text}",
-    ["Model Roleplay"] = "You are a translation model. Please translate the following text to {lang}: {text}",
-    ["AI Self-aware"] = "As an AI language model, please convert the following text to {lang}: {text}",
+ChatGPTPromptPresets = {
+    ["Basic"] = "Translate the following message to {{lang}} in a natural and Internet style.",
+    ["Cute with Emoticons"] = "You are a professional translation engine, please translate the following text into {{lang}}, in the style of game message scenario with cute emoticons, Internet slang and without the style of machine translation.",
+    ["Model Roleplay"] = "You are a translation model. Please translate the following text to {{lang}}.",
+    ["AI Self-aware"] = "As an AI language model, please convert the following text to {{lang}}."
 }
 
-function moduleExports.getChatGPTPromptPresetsOptions()
-    local chatGPTPromptPresetsOptions = {}
-    for name, preset in pairs(chatGPTPromptPresets) do
-        chatGPTPromptPresetsOptions[#chatGPTPromptPresetsOptions + 1] = { name }
-    end
-    return chatGPTPromptPresetsOptions
-end
+ChatGPTPromptPresetsOptions = {}
+for name, preset in pairs(ChatGPTPromptPresets) do ChatGPTPromptPresetsOptions[#ChatGPTPromptPresetsOptions + 1] =
+    {name} end
 
-local function createGoogleTranslateCall(config)
-    return function(text, targetLang, onSuccess)
-        local HEADERS = {
-            ["User-Agent"] = "User-Agent",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.1 Safari/605.1.15"
-        }
-        local params = {
-            client = "dict-chrome-ex",
-            sl = "auto",
-            tl = targetLang,
-            dt = "t",
-            dj = "1",
-            source = "input",
-            q = polyglotUtils.url_encode(text),
-        }
+local function googleTranslateCall(text, targetLang, onSuccess)
+    local HEADERS = {
+        ["User-Agent"] = "User-Agent",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.1 Safari/605.1.15"
+    }
+    local params = {
+        client = "dict-chrome-ex",
+        sl = "auto",
+        tl = targetLang,
+        dt = "t",
+        dj = "1",
+        source = "input",
+        q = polyglotUtils.url_encode(text)
+    }
 
-        async_http.init("translate.googleapis.com", "/translate_a/t?" .. polyglotUtils.tableToUrlParams(params),
-            function(body, header_fields, status_code)
-                if status_code == 200 and body ~= "" then
-                    util.log("Google translate response: " .. body)
-                    local translation, sourceLang = body:match('%[%["(.-)","(.-)"%]%]')
-                    translation = translation:gsub("\\u(%x%x%x%x)", polyglotUtils.unicode_escape)
-                    translation = translation:gsub(" <code> 0 </code> ", "\n")
-                    translation = translation:gsub("<code>0</code>", "\n")
-                    translation = translation:gsub("\\(.)", "%1")
-                    onSuccess(translation, sourceLang)
-                else
-                    polyglotUtils.toast(polyglotLocalization.templates.errorTranslating, text, tostring(status_code))
-                end
-            end)
-        for key, value in pairs(HEADERS) do
-            async_http.add_header(key, value)
-        end
-        async_http.dispatch()
-    end
+    async_http.init("translate.googleapis.com", "/translate_a/t?" .. polyglotUtils.tableToUrlParams(params),
+        function(body, header_fields, status_code)
+            if status_code == 200 and body ~= "" then
+                polyglotUtils.debugLog("Google translate response: " .. body)
+                local translation, sourceLang = body:match('%[%["(.-)","(.-)"%]%]')
+                translation = translation:gsub("\\u(%x%x%x%x)", polyglotUtils.unicode_escape)
+                translation = translation:gsub(" <code> 0 </code> ", "\n")
+                translation = translation:gsub("<code>0</code>", "\n")
+                translation = translation:gsub("\\(.)", "%1")
+                onSuccess(translation, sourceLang)
+            else
+                polyglotUtils.toast(LOC.templates.errorTranslating, text, tostring(status_code))
+            end
+        end)
+    for key, value in pairs(HEADERS) do async_http.add_header(key, value) end
+    async_http.dispatch()
 end
 
 local function generatePromptFromPreset(preset, text, targetLang)
-    local prompt = chatGPTPromptPresets[preset]                 -- Get the preset string
-    prompt = prompt:gsub("{lang}", LangLookupByKey[targetLang]) -- Replace {lang} placeholder
-    prompt = prompt:gsub("{text}", text)                        -- Replace {text} placeholder
+    local prompt = ChatGPTPromptPresets[preset] ..
+                       " The translation should be provided in the following JSON format:\n```json\n{\n    \"translations\": [\n        {\n            \"t\": \"{{translated_message}}\",\n            \"s\": \"{{English name of source_language}}\"\n        }\n    ]\n}\n```\nMessage: {{text}}"
+    prompt = prompt:gsub("{{lang}}", LangLookupByKey[targetLang]) -- Replace {lang} placeholder
+    prompt = prompt:gsub("{{text}}", text) -- Replace {text} placeholder
     return prompt
 end
 
-local function createChatGPTTranslateCall(config)
-    return function(text, targetLang, onSuccess)
-        local apiKey = config.apiKey
-        if apiKey == nil or apiKey == "" then
-            polyglotUtils.toast(polyglotLocalization.templates.apiKeyNotSet)
-            return
-        end
-
-        local prompt = generatePromptFromPreset(config.chatGPTPromptPreset, text, targetLang)
-        local postData = '{"model": "gpt-3.5-turbo", "messages": [{"role": "user", "content": "' ..
-            prompt .. '"}], "stream": false}'
-        async_http.init("api.openai.com", "/v1/chat/completions", function(body, header_fields, status_code)
-            if status_code == 200 and body ~= "" then
-                util.log("ChatGPT response: " .. body)
-                local answer = body:match("\"content\":\"(.-)\"}")
-                answer = answer:gsub("\\u0026", "&")
-                answer = answer:gsub("\\\"", "\"")
-                answer = answer:gsub("\\\\", "\\")
-                answer = answer:gsub("~", " ")
-                answer = answer:match("^%s*(.-)%s*$") -- Remove heading and trailing spaces
-                onSuccess(answer, "no")
-            else
-                polyglotUtils.toast(polyglotLocalization.templates.errorTranslating, text, tostring(status_code))
-            end
-        end, function()
-            polyglotUtils.toast(polyglotLocalization.templates.errorConnectingToChatGPTAPI)
-        end)
-        async_http.set_post("application/json", postData)
-        async_http.add_header("Authorization", "Bearer " .. apiKey)
-        async_http.dispatch()
-        util.log("ChatGPT request sent with post data: " .. postData)
+local function chatGPTTranslateCall(text, targetLang, onSuccess)
+    local apiKey = Config.apiKey
+    if apiKey == nil or apiKey == "" then
+        polyglotUtils.toast(LOC.templates.apiKeyNotSet)
+        return
     end
+
+    local prompt = generatePromptFromPreset(Config.chatGPTPromptPreset, text, targetLang)
+    local postData = {
+        model = "gpt-3.5-turbo",
+        messages = {
+            {
+                role = "user",
+                content = prompt
+            }
+        },
+        stream = false
+    }
+    postData = json.encode(postData)
+    async_http.init("api.openai.com", "/v1/chat/completions", function(body, header_fields, status_code)
+        if status_code == 200 and body ~= "" then
+            polyglotUtils.debugLog("ChatGPT response: " .. body)
+            local response = json.decode(body)
+            local responseContent = response.choices[1].message.content
+            polyglotUtils.debugLog("ChatGPT response content: " .. responseContent)
+            if polyglotUtils.isJSON(responseContent) then
+                local translation = polyglotUtils.extractJSON(responseContent).translations[1]
+                local sourceLang = LangLookupByName[translation.s]
+                onSuccess(translation.t, sourceLang or "en")
+            else
+                polyglotUtils.toast("The API returned a natural language response: " .. responseContent)
+            end
+        else
+            polyglotUtils.toast(LOC.templates.errorTranslating, text, tostring(status_code))
+        end
+    end, function() polyglotUtils.toast(LOC.templates.errorConnectingToChatGPTAPI) end)
+    async_http.set_post("application/json", postData)
+    async_http.add_header("Authorization", "Bearer " .. apiKey)
+    async_http.dispatch()
+    polyglotUtils.debugLog("ChatGPT request sent with post data: " .. postData)
 end
 
-local createMethods = {
-    ["Google Translate"] = createGoogleTranslateCall,
-    --["Bing"] = bingTranslateCall,
-    ["ChatGPT"] = createChatGPTTranslateCall
+local translationMethods = {
+    ["Google Translate"] = googleTranslateCall,
+    -- ["Bing"] = bingTranslateCall,
+    ["ChatGPT"] = chatGPTTranslateCall
 }
 
-function moduleExports.getTranslationMethodOptions()
-    local options = {}
-    for method, _ in pairs(createMethods) do
-        table.insert(options, { method })
-    end
-    return options
-end
+TranslationMethodOptions = {}
+for method, _ in pairs(translationMethods) do table.insert(TranslationMethodOptions, {method}) end
 
-function moduleExports.translateText(text, targetLang, translationMethod, config, onSuccess)
-    if createMethods[translationMethod] then
-        createMethods[translationMethod](config)(text, targetLang, function(translation, sourceLang)
+function moduleExports.translateText(text, targetLang, translationMethod, onSuccess)
+    if translationMethods[translationMethod] then
+        translationMethods[translationMethod](text, targetLang, function(translation, sourceLang)
             onSuccess(translation, sourceLang:lower())
         end)
     end
@@ -724,32 +579,28 @@ package.preload['src.lib.chat'] = (function (...)
 						return t;
 					end
 				-- package.loaded["src.lib.chat"] = nil
-local polyglotUtils = require("src.lib.utils")
-local LOC = require("src.lib.localization")
-local natives = require("src.natives.natives")
-
 local scaleformHandleTable = {}
 local scaleformTypes = {
-    ["number"] = natives.GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_FLOAT,
-    ["string"] = natives.GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_PLAYER_NAME_STRING,
-    ["boolean"] = natives.GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_BOOL
+    ["number"] = GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_FLOAT,
+    ["string"] = GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_PLAYER_NAME_STRING,
+    ["boolean"] = GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_BOOL
 }
 
 local checkScaleformAndLoad = function(scaleformName)
-    if not scaleformHandleTable[scaleformName] or not natives.GRAPHICS.HAS_SCALEFORM_MOVIE_LOADED(scaleformHandleTable[scaleformName]) then
-        local scaleformHandle = natives.GRAPHICS.REQUEST_SCALEFORM_MOVIE(scaleformName)
-        while not natives.GRAPHICS.HAS_SCALEFORM_MOVIE_LOADED(scaleformHandle) do
+    if not scaleformHandleTable[scaleformName] or not GRAPHICS.HAS_SCALEFORM_MOVIE_LOADED(scaleformHandleTable[scaleformName]) then
+        local scaleformHandle = GRAPHICS.REQUEST_SCALEFORM_MOVIE(scaleformName)
+        while not GRAPHICS.HAS_SCALEFORM_MOVIE_LOADED(scaleformHandle) do
             util.yield()
         end
         scaleformHandleTable[scaleformName] = scaleformHandle
-        natives.GRAPHICS.DRAW_SCALEFORM_MOVIE_FULLSCREEN(scaleformHandle, 255, 255, 255, 255, 1)
+        GRAPHICS.DRAW_SCALEFORM_MOVIE_FULLSCREEN(scaleformHandle, 255, 255, 255, 255, 1)
     end
 end
 
 local function callScaleformMethod(scaleformName, method, ...)
     local args = { ... }
     checkScaleformAndLoad(scaleformName)
-    if natives.GRAPHICS.BEGIN_SCALEFORM_MOVIE_METHOD(scaleformHandleTable[scaleformName], method) then
+    if GRAPHICS.BEGIN_SCALEFORM_MOVIE_METHOD(scaleformHandleTable[scaleformName], method) then
         for i = 1, #args do
             local arg = args[i]
             local type = type(arg)
@@ -760,7 +611,7 @@ local function callScaleformMethod(scaleformName, method, ...)
                 error("Invalid type passed to scaleform method: " .. type)
             end
         end
-        natives.GRAPHICS.END_SCALEFORM_MOVIE_METHOD()
+        GRAPHICS.END_SCALEFORM_MOVIE_METHOD()
     end
 end
 
@@ -783,7 +634,7 @@ local colors = {
     highlight = { ["r"] = 160 / 255, ["g"] = 160 / 255, ["b"] = 160 / 255, ["a"] = 1.0 }, -- also grayish
 }
 
-local TranslatedMsgLocationOptions = {
+TranslatedMsgLocationOptions = {
     LOC.translatedMsgLocationOptions.teamChatNotNetworked,
     LOC.translatedMsgLocationOptions.teamChatNetworked,
     LOC.translatedMsgLocationOptions.globalChatNotNetworked,
@@ -792,13 +643,6 @@ local TranslatedMsgLocationOptions = {
     LOC.translatedMsgLocationOptions.popup
 }
 
-function moduleExports.getTranslatedMsgLocationOptions()
-    local options = {}
-    for i, v in ipairs(TranslatedMsgLocationOptions) do
-        options[i] = v
-    end
-    return options
-end
 
 local messages = {}
 local display_duration = 3000 -- Time in ms to display each message
@@ -902,28 +746,28 @@ end)
 
 
 local botSend = false -- To avoid infinite loop
-function moduleExports.createOnMessageCallback(config, translateTextCB)
+function moduleExports.createOnMessageCallback(translateTextCB)
     return function(sender, reserved, text, team_chat, networked, is_auto)
-        if not config.translateOn then
+        if not Config.translateOn then
             return
         end
         if not botSend then
-            if not config.translateSelf and (sender == players.user()) then
+            if not Config.translateSelf and (sender == players.user()) then
                 return
             else
-                translateTextCB(text, config.targetLanguageIncoming, config.translationMethodIncoming, config,
+                translateTextCB(text, Config.targetLanguageIncoming, Config.translationMethodIncoming,
                     function(translation, sourceLang)
                         ---@type string
                         local senderName = players.get_name(sender)
                         local resultText = translation
                         ---@type number
-                        local colorFinal = config.colorSelect
-                        local translatedMsgLocation = config.translatedMsgLocation
+                        local colorFinal = Config.colorSelect
+                        local translatedMsgLocation = Config.translatedMsgLocation
                         ---@type string
-                        local teamChatLabel = config.teamChatLabel
+                        local teamChatLabel = Config.teamChatLabel
                         ---@type string
-                        local allChatLabel = config.allChatLabel
-                        if config.blacklistedLanguages[sourceLang] == true then
+                        local allChatLabel = Config.allChatLabel
+                        if Config.blacklistedLanguages[sourceLang] == true then
                             return
                         end
                         -- "Team Chat not networked", "Team Chat networked", "Global Chat not networked", "Global Chat networked", "Notification"
@@ -959,15 +803,15 @@ function moduleExports.createOnMessageCallback(config, translateTextCB)
     end
 end
 
-function moduleExports.sendMessage(myText, config, translateTextCB)
-    translateTextCB(myText, config.targetLanguageOutgoing, config.translationMethodOutgoing, config,
+function moduleExports.sendMessage(myText, translateTextCB)
+    translateTextCB(myText, Config.targetLanguageOutgoing, Config.translationMethodOutgoing,
         function(translation, sourceLang)
             -- for _, pId in ipairs(players.list()) do
             --     chat.send_targeted_message(pId, players.user(), translation, false)
             -- end
             -- void chat.send_message(string text, bool team_chat, bool add_to_local_history, bool networked)
             chat.send_message(translation, false, true, true)
-            util.log("Message sent: " .. translation)
+            polyglotUtils.debugLog("Message sent: " .. translation)
         end)
 end
 
@@ -1502,20 +1346,35 @@ package.preload['src.lib.menus'] = (function (...)
 						_M = t;
 						return t;
 					end
-				-- package.loaded["src.lib.menus"] = nil
-util.keep_running()
-local polyglotUpdater = require "src.lib.updater"
-local polyglotUtils = require "src.lib.utils"
-local LOC = require "src.lib.localization"
+				local polyglotUpdater = require "src.lib.updater"
 local polyglotChat = require "src.lib.chat"
 local polyglotTranslation = require "src.lib.translation"
-local Config = require("src.lib.config").Config
-local config = Config:new()
 
-local natives = require "src.natives.natives"
+Config = {
+    translationMethodIncoming = "Google Translate",
+    translationMethodOutgoing = "Google Translate",
+    targetLanguageIncoming = "af",
+    targetLanguageOutgoing = "af",
 
----@type CommandRef
-local CommandRef = require("src.docs.CommandRef")
+    blacklistedLanguages = {},
+
+    chatGPTPromptPreset = "Basic",
+    temperature = 1.0,
+    topP = 1.0,
+    presencePenalty = 0.0,
+    frequencyPenalty = 0.0,
+
+    translateOn = true,
+    translateSelf = false,
+
+    translatedMsgLocation = 5,
+
+    colorSelect = 1,
+    allChatLabel = util.get_label_text("MP_CHAT_ALL"),
+    teamChatLabel = util.get_label_text("MP_CHAT_TEAM"),
+
+    debugMode = false
+}
 
 if not async_http.have_access() then
     polyglotUtils.toast(LOC.noInternetAccess)
@@ -1524,59 +1383,29 @@ end
 
 polyglotUpdater.runUpdater(0)
 
-config.translationMethodIncoming = "Google Translate"
-config.translationMethodOutgoing = "Google Translate"
-config.targetLanguageIncoming = "af"
-config.targetLanguageOutgoing = "af"
-
-config.blacklistedLanguages = {}
-
-config.chatGPTPromptPreset = "Basic"
-config.temperature = 1.0
-config.topP = 1.0
-config.presencePenalty = 0.0
-config.frequencyPenalty = 0.0
-
-config.translateOn = true
-config.translateSelf = false
-
-config.translatedMsgLocation = 5
-
-config.colorSelect = 1
-config.allChatLabel = util.get_label_text("MP_CHAT_ALL")
-config.teamChatLabel = util.get_label_text("MP_CHAT_TEAM")
-
 local focusRef = {}
 local isFocused = false
 
-menu.toggle(menu.my_root(), LOC.translatorListenerOn, { "translateon" },
-    LOC.translatorListenerOnD, function(on)
-        config.translateOn = on
-    end, true)
+menu.toggle(menu.my_root(), LOC.translatorListenerOn, {"translateon"}, LOC.translatorListenerOnD,
+    function(on) Config.translateOn = on end, true)
 
-menu.toggle(menu.my_root(), LOC.translateYourself, { "translateself" }, LOC.translateYourselfD, function(on)
-    config.translateSelf = on
-end)
+menu.toggle(menu.my_root(), LOC.translateYourself, {"translateself"}, LOC.translateYourselfD,
+    function(on) Config.translateSelf = on end)
 
-menu.my_root():list_select(LOC.translatedMessageDisplay, {},
-    LOC.translatedMessageDisplayD, config.TranslatedMsgLocationOptions, #config.TranslatedMsgLocationOptions,
-    function(index, option, prevIndex, clickType)
-        config.translatedMsgLocation = index
-    end)
+menu.my_root():list_select(LOC.translatedMessageDisplay, {}, LOC.translatedMessageDisplayD,
+    TranslatedMsgLocationOptions, #TranslatedMsgLocationOptions,
+    function(index, option, prevIndex, clickType) Config.translatedMsgLocation = index end)
 
 -- CommandRef|CommandUniqPtr menu.list(CommandRef parent, Label menu_name, table<any, string> command_names = {}, Label help_text = "", ?function on_click = nil, ?function on_back = nil, ?function on_active_list_update = nil)
-local settingTranslationMenu = menu.list(menu.my_root(), LOC.scriptSettings, {},
-    LOC.scriptSettingsD)
+local settingTranslationMenu = menu.list(menu.my_root(), LOC.scriptSettings, {}, LOC.scriptSettingsD)
 local colorTranslation = menu.list(settingTranslationMenu, LOC.playerNameColor)
 menu.on_focus(colorTranslation, function()
     util.yield(50)
     isFocused = false
 end)
 local selectMenu = menu.action(colorTranslation,
-    polyglotUtils.templateReplace(LOC.templates.selectedColor, config.colorSelect), {},
-    "", function()
-        menu.focus(focusRef[tonumber(config.colorSelect)])
-    end)
+    polyglotUtils.templateReplace(LOC.templates.selectedColor, Config.colorSelect), {}, "",
+    function() menu.focus(focusRef[tonumber(Config.colorSelect)]) end)
 menu.on_focus(selectMenu, function()
     util.yield(50)
     isFocused = false
@@ -1584,111 +1413,95 @@ end)
 for i = 1, 234 do
     focusRef[i] = menu.action(colorTranslation, "Color : " .. i, {}, "", function()
         menu.set_menu_name(selectMenu, "Selected : " .. "Color : " .. i)
-        config.colorSelect = i
+        Config.colorSelect = i
     end)
     menu.on_focus(focusRef[i], function()
         isFocused = false
         util.yield(50)
         isFocused = true
         while isFocused do
-            if not menu.is_open() then
-                isFocused = false
-            end
+            if not menu.is_open() then isFocused = false end
             ptr1 = memory.alloc()
             ptr2 = memory.alloc()
             ptr3 = memory.alloc()
             ptr4 = memory.alloc()
-            natives.HUD.GET_HUD_COLOUR(i, ptr1, ptr2, ptr3, ptr4)
-            directx.draw_text(0.5, 0.5, "example", 5, 0.75,
-                {
-                    r = memory.read_int(ptr1) / 255,
-                    g = memory.read_int(ptr2) / 255,
-                    b = memory.read_int(ptr3) / 255,
-                    a = memory.read_int(ptr4) / 255
-                }, true)
+            HUD.GET_HUD_COLOUR(i, ptr1, ptr2, ptr3, ptr4)
+            directx.draw_text(0.5, 0.5, "example", 5, 0.75, {
+                r = memory.read_int(ptr1) / 255,
+                g = memory.read_int(ptr2) / 255,
+                b = memory.read_int(ptr3) / 255,
+                a = memory.read_int(ptr4) / 255
+            }, true)
             util.yield()
         end
     end)
 end
 
-menu.text_input(settingTranslationMenu,
-    polyglotUtils.templateReplace(LOC.templates.customLabelForTeamTranslation,
-        string.upper(util.get_label_text("MP_CHAT_TEAM"))), { "labelteam" },
-    LOC.customLabelForTeamTranslationD, function(s, click_type)
+menu.text_input(settingTranslationMenu, polyglotUtils.templateReplace(LOC.templates.customLabelForTeamTranslation,
+    string.upper(util.get_label_text("MP_CHAT_TEAM"))), {"labelteam"}, LOC.customLabelForTeamTranslationD,
+    function(s, click_type)
         if (s == "") then
-            config.teamChatLabel = util.get_label_text("MP_CHAT_TEAM")
+            Config.teamChatLabel = util.get_label_text("MP_CHAT_TEAM")
         else
-            config.teamChatLabel = s
+            Config.teamChatLabel = s
         end
     end)
-if not (config.teamChatLabel == util.get_label_text("MP_CHAT_TEAM")) then
-    menu.trigger_commands("labelteam " .. config.teamChatLabel)
+if not (Config.teamChatLabel == util.get_label_text("MP_CHAT_TEAM")) then
+    menu.trigger_commands("labelteam " .. Config.teamChatLabel)
 end
 
-menu.text_input(settingTranslationMenu,
-    polyglotUtils.templateReplace(LOC.templates.customLabelForAllTranslation,
-        string.upper(util.get_label_text("MP_CHAT_ALL"))), { "labelall" },
-    LOC.customLabelForAllTranslationD, function(s, click_type)
+menu.text_input(settingTranslationMenu, polyglotUtils.templateReplace(LOC.templates.customLabelForAllTranslation,
+    string.upper(util.get_label_text("MP_CHAT_ALL"))), {"labelall"}, LOC.customLabelForAllTranslationD,
+    function(s, click_type)
         if (s == "") then
-            config.allChatLabel = util.get_label_text("MP_CHAT_ALL")
+            Config.allChatLabel = util.get_label_text("MP_CHAT_ALL")
         else
-            config.allChatLabel = s
+            Config.allChatLabel = s
         end
     end)
-if not (config.teamChatLabel == util.get_label_text("MP_CHAT_TEAM")) then
-    menu.trigger_commands("labelall " .. config.allChatLabel)
+if not (Config.teamChatLabel == util.get_label_text("MP_CHAT_TEAM")) then
+    menu.trigger_commands("labelall " .. Config.allChatLabel)
 end
 -- CommandRef|CommandUniqPtr menu.action(CommandRef parent, Label menu_name, table<any, string> command_names, Label help_text, function on_click, ?function on_command = nil, ?string syntax = nil, int perm = COMMANDPERM_USERONLY)
-local updateActionRef = menu.action(settingTranslationMenu, LOC.checkForUpdates, {}, "", polyglotUpdater.runUpdater)
+menu.action(settingTranslationMenu, LOC.checkForUpdates, {}, "", polyglotUpdater.runUpdater)
 
-local blacklistMenu = menu.list(menu.my_root(), LOC.translatorListenerBlacklist, {},
-    LOC.translatorListenerBlacklistD)
+local blacklistMenu = menu.list(menu.my_root(), LOC.translatorListenerBlacklist, {}, LOC.translatorListenerBlacklistD)
 -- CommandRef|CommandUniqPtr menu.toggle(CommandRef parent, Label menu_name, table<any, string> command_names, Label help_text, function on_change, bool default_on = false)
-for i, langKey in ipairs(config.LangKeyList) do
-    config.blacklistedLanguages[langKey] = false
-    blacklistMenu:toggle(config.LangLookupByKey[langKey], {}, "", function(on)
-        config.blacklistedLanguages[langKey] = on
-    end, false)
+for i, langKey in ipairs(LangKeyList) do
+    Config.blacklistedLanguages[langKey] = false
+    blacklistMenu:toggle(LangLookupByKey[langKey], {}, "", function(on) Config.blacklistedLanguages[langKey] = on end,
+        false)
 end
 
 local translationMethodMenu = menu.list(menu.my_root(), LOC.translationMethod, {}, LOC.translationMethodD)
 
-
-translationMethodMenu:list_select(LOC.incomingMessages, {},
-    LOC.incomingMessagesD, config.TranslationMethodOptions, 1,
+translationMethodMenu:list_select(LOC.incomingMessages, {}, LOC.incomingMessagesD, TranslationMethodOptions, 1,
     function(index, option, prevIndex, clickType)
         polyglotUtils.toast(LOC.templates.translationMethodIncomingChangedTo, option)
-        config.translationMethodIncoming = option
+        Config.translationMethodIncoming = option
     end)
 
-local translationMethodOutgoingMenu = menu.list_select(translationMethodMenu, LOC.outgoingMessages, {},
-    LOC.outgoingMessagesD, config.TranslationMethodOptions, 1,
+menu.list_select(translationMethodMenu, LOC.outgoingMessages, {}, LOC.outgoingMessagesD, TranslationMethodOptions, 1,
     function(index, option, prevIndex, clickType)
         polyglotUtils.toast(LOC.templates.translationMethodOutgoingChangedTo, option)
-        config.translationMethodOutgoing = option
+        Config.translationMethodOutgoing = option
     end)
 
-local targetLanguageIncomingMenu = menu.list_select(menu.my_root(), LOC.targetLanguageIncoming, { "inlang" },
-    LOC.targetLanguageIncomingD,
-    config.LangNameList, 1, function(index, option, prevIndex, clickType)
-        config.targetLanguageIncoming = config.LangLookupByName[option]
-    end)
+menu.list_select(menu.my_root(), LOC.targetLanguageIncoming, {"inlang"}, LOC.targetLanguageIncomingD, LangNameList, 1,
+    function(index, option, prevIndex, clickType) Config.targetLanguageIncoming = LangLookupByName[option] end)
 
 ---@type CommandRef
 local translateMyMsg = menu.list(menu.my_root(), LOC.sendTranslatedMessage)
 
-translateMyMsg:list_select(LOC.targetLanguageOutgoing, { "outlang" },
-    LOC.targetLanguageOutgoingD, config.LangNameList, 1,
-    function(index, option, prevIndex, clickType)
-        config.targetLanguageOutgoing = config.LangLookupByName[option]
-    end)
+translateMyMsg:list_select(LOC.targetLanguageOutgoing, {"outlang"}, LOC.targetLanguageOutgoingD, LangNameList, 1,
+    function(index, option, prevIndex, clickType) Config.targetLanguageOutgoing = LangLookupByName[option] end)
 
-translateMyMsg:action(LOC.sendMessage, { "Sendmessage" }, LOC.sendMessageD, function(on_click)
+translateMyMsg:action(LOC.sendMessage, {"Sendmessage"}, LOC.sendMessageD, function(on_click)
     polyglotUtils.toast(LOC.inputMessage)
     menu.show_command_box("Sendmessage ")
 end, function(on_command)
     local myText = on_command
-    polyglotChat.sendMessage(myText, config, polyglotTranslation.translateText)
+    polyglotChat.sendMessage(myText, polyglotTranslation.translateText)
 end)
 -- int chat.on_message(function callback)
 --     Registers a function to be called when a chat message is sent:
@@ -1696,52 +1509,443 @@ end)
 --     chat.on_message(function(sender, reserved, text, team_chat, networked, is_auto)
 --         -- Do stuff...
 --     end)
-chat.on_message(polyglotChat.createOnMessageCallback(config, polyglotTranslation.translateText))
+chat.on_message(polyglotChat.createOnMessageCallback(polyglotTranslation.translateText))
 
-local chatGPTSettingsMenu = menu.list(menu.my_root(), LOC.chatGPTSettings, {},
-    LOC.chatGPTSettingsD)
+local chatGPTSettingsMenu = menu.list(menu.my_root(), LOC.chatGPTSettings, {}, LOC.chatGPTSettingsD)
 
-chatGPTSettingsMenu:text_input(LOC.apiKeyInput, { "gptkey" },
-    LOC.apiKeyInputD,
-    function(value, click_type)
-        config.apiKey = value
-    end)
+chatGPTSettingsMenu:text_input(LOC.apiKeyInput, {"gptkey"}, LOC.apiKeyInputD,
+    function(value, click_type) Config.apiKey = value end)
 
-chatGPTSettingsMenu:list_select(LOC.chatGPTPromptPreset,
-    {},
-    LOC.chatGPTPromptPresetD, polyglotTranslation.getChatGPTPromptPresetsOptions(), 1,
+chatGPTSettingsMenu:list_select(LOC.chatGPTPromptPreset, {}, LOC.chatGPTPromptPresetD, ChatGPTPromptPresetsOptions, 1,
     function(index, option, prevIndex, click_type)
-        config.chatGPTPromptPreset = option
-        polyglotUtils.toast(LOC.templates.chatGPTPromptChangedTo, config.chatGPTPromptPreset)
+        Config.chatGPTPromptPreset = option
+        polyglotUtils.toast(LOC.templates.chatGPTPromptChangedTo, Config.chatGPTPromptPreset)
     end)
 
---CommandRef|CommandUniqPtr menu.slider_float(CommandRef parent, Label menu_name, table<any, string> command_names, Label help_text, int min_value, int max_value, int default_value, int step_size, function on_change)
---Your on_change function will be called with value, prev_value and click_type.
+-- CommandRef|CommandUniqPtr menu.slider_float(CommandRef parent, Label menu_name, table<any, string> command_names, Label help_text, int min_value, int max_value, int default_value, int step_size, function on_change)
+-- Your on_change function will be called with value, prev_value and click_type.
 --
---Note that the float variant is practically identical except the last 2 digits are indicated to be numbers after the decimal point.
+-- Note that the float variant is practically identical except the last 2 digits are indicated to be numbers after the decimal point.
 
-chatGPTSettingsMenu:slider_float(LOC.temperature, {},
-    LOC.temperatureD,
-    0, 200, 100, 10, function(value, prev_value, click_type)
-        config.temperature = value / 100
-    end)
+chatGPTSettingsMenu:slider_float(LOC.temperature, {}, LOC.temperatureD, 0, 200, 100, 10,
+    function(value, prev_value, click_type) Config.temperature = value / 100 end)
 
-chatGPTSettingsMenu:slider_float(LOC.topP, {},
-    LOC.topPD,
-    0, 100, 100, 5, function(value, prev_value, click_type)
-        config.topP = value / 100
-    end)
+chatGPTSettingsMenu:slider_float(LOC.topP, {}, LOC.topPD, 0, 100, 100, 5,
+    function(value, prev_value, click_type) Config.topP = value / 100 end)
 
-chatGPTSettingsMenu:slider_float(LOC.presencePenalty, {},
-    LOC.presencePenaltyD,
-    -200, 200, 0, 10, function(value, prev_value, click_type)
-        config.presencePenalty = value / 100
-    end)
+chatGPTSettingsMenu:slider_float(LOC.presencePenalty, {}, LOC.presencePenaltyD, -200, 200, 0, 10,
+    function(value, prev_value, click_type) Config.presencePenalty = value / 100 end)
 
-chatGPTSettingsMenu:slider_float(LOC.frequencyPenalty, {},
-    LOC.frequencyPenaltyD,
-    -200, 200, 0, 10, function(value, prev_value, click_type)
-        config.frequencyPenalty = value / 100
-    end)
+chatGPTSettingsMenu:slider_float(LOC.frequencyPenalty, {}, LOC.frequencyPenaltyD, -200, 200, 0, 10,
+    function(value, prev_value, click_type) Config.frequencyPenalty = value / 100 end)
+
+-- CommandRef|CommandUniqPtr menu.toggle(CommandRef parent, Label menu_name, table<any, string> command_names, Label help_text, function on_change, bool default_on = false)
+menu.my_root():toggle("Debug Mode", {}, "", function(on) Config.debugMode = on end, false)
  end)
-local menus = require "src.lib.menus"
+package.preload['src.lib.external.json'] = (function (...)
+					local _ENV = _ENV;
+					local function module(name, ...)
+						local t = package.loaded[name] or _ENV[name] or { _NAME = name };
+						package.loaded[name] = t;
+						for i = 1, select("#", ...) do
+							(select(i, ...))(t);
+						end
+						_ENV = t;
+						_M = t;
+						return t;
+					end
+				--
+-- json.lua
+--
+-- Copyright (c) 2020 rxi
+--
+-- Permission is hereby granted, free of charge, to any person obtaining a copy of
+-- this software and associated documentation files (the "Software"), to deal in
+-- the Software without restriction, including without limitation the rights to
+-- use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+-- of the Software, and to permit persons to whom the Software is furnished to do
+-- so, subject to the following conditions:
+--
+-- The above copyright notice and this permission notice shall be included in all
+-- copies or substantial portions of the Software.
+--
+-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+-- SOFTWARE.
+--
+
+local json = { _version = "0.1.2" }
+
+-------------------------------------------------------------------------------
+-- Encode
+-------------------------------------------------------------------------------
+
+local encode
+
+local escape_char_map = {
+  [ "\\" ] = "\\",
+  [ "\"" ] = "\"",
+  [ "\b" ] = "b",
+  [ "\f" ] = "f",
+  [ "\n" ] = "n",
+  [ "\r" ] = "r",
+  [ "\t" ] = "t",
+}
+
+local escape_char_map_inv = { [ "/" ] = "/" }
+for k, v in pairs(escape_char_map) do
+  escape_char_map_inv[v] = k
+end
+
+
+local function escape_char(c)
+  return "\\" .. (escape_char_map[c] or string.format("u%04x", c:byte()))
+end
+
+
+local function encode_nil(val)
+  return "null"
+end
+
+
+local function encode_table(val, stack)
+  local res = {}
+  stack = stack or {}
+
+  -- Circular reference?
+  if stack[val] then error("circular reference") end
+
+  stack[val] = true
+
+  if rawget(val, 1) ~= nil or next(val) == nil then
+    -- Treat as array -- check keys are valid and it is not sparse
+    local n = 0
+    for k in pairs(val) do
+      if type(k) ~= "number" then
+        error("invalid table: mixed or invalid key types")
+      end
+      n = n + 1
+    end
+    if n ~= #val then
+      error("invalid table: sparse array")
+    end
+    -- Encode
+    for i, v in ipairs(val) do
+      table.insert(res, encode(v, stack))
+    end
+    stack[val] = nil
+    return "[" .. table.concat(res, ",") .. "]"
+
+  else
+    -- Treat as an object
+    for k, v in pairs(val) do
+      if type(k) ~= "string" then
+        error("invalid table: mixed or invalid key types")
+      end
+      table.insert(res, encode(k, stack) .. ":" .. encode(v, stack))
+    end
+    stack[val] = nil
+    return "{" .. table.concat(res, ",") .. "}"
+  end
+end
+
+
+local function encode_string(val)
+  return '"' .. val:gsub('[%z\1-\31\\"]', escape_char) .. '"'
+end
+
+
+local function encode_number(val)
+  -- Check for NaN, -inf and inf
+  if val ~= val or val <= -math.huge or val >= math.huge then
+    error("unexpected number value '" .. tostring(val) .. "'")
+  end
+  return string.format("%.14g", val)
+end
+
+
+local type_func_map = {
+  [ "nil"     ] = encode_nil,
+  [ "table"   ] = encode_table,
+  [ "string"  ] = encode_string,
+  [ "number"  ] = encode_number,
+  [ "boolean" ] = tostring,
+}
+
+
+encode = function(val, stack)
+  local t = type(val)
+  local f = type_func_map[t]
+  if f then
+    return f(val, stack)
+  end
+  error("unexpected type '" .. t .. "'")
+end
+
+
+function json.encode(val)
+  return ( encode(val) )
+end
+
+
+-------------------------------------------------------------------------------
+-- Decode
+-------------------------------------------------------------------------------
+
+local parse
+
+local function create_set(...)
+  local res = {}
+  for i = 1, select("#", ...) do
+    res[ select(i, ...) ] = true
+  end
+  return res
+end
+
+local space_chars   = create_set(" ", "\t", "\r", "\n")
+local delim_chars   = create_set(" ", "\t", "\r", "\n", "]", "}", ",")
+local escape_chars  = create_set("\\", "/", '"', "b", "f", "n", "r", "t", "u")
+local literals      = create_set("true", "false", "null")
+
+local literal_map = {
+  [ "true"  ] = true,
+  [ "false" ] = false,
+  [ "null"  ] = nil,
+}
+
+
+local function next_char(str, idx, set, negate)
+  for i = idx, #str do
+    if set[str:sub(i, i)] ~= negate then
+      return i
+    end
+  end
+  return #str + 1
+end
+
+
+local function decode_error(str, idx, msg)
+  local line_count = 1
+  local col_count = 1
+  for i = 1, idx - 1 do
+    col_count = col_count + 1
+    if str:sub(i, i) == "\n" then
+      line_count = line_count + 1
+      col_count = 1
+    end
+  end
+  error( string.format("%s at line %d col %d", msg, line_count, col_count) )
+end
+
+
+local function codepoint_to_utf8(n)
+  -- http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=iws-appendixa
+  local f = math.floor
+  if n <= 0x7f then
+    return string.char(n)
+  elseif n <= 0x7ff then
+    return string.char(f(n / 64) + 192, n % 64 + 128)
+  elseif n <= 0xffff then
+    return string.char(f(n / 4096) + 224, f(n % 4096 / 64) + 128, n % 64 + 128)
+  elseif n <= 0x10ffff then
+    return string.char(f(n / 262144) + 240, f(n % 262144 / 4096) + 128,
+                       f(n % 4096 / 64) + 128, n % 64 + 128)
+  end
+  error( string.format("invalid unicode codepoint '%x'", n) )
+end
+
+
+local function parse_unicode_escape(s)
+  local n1 = tonumber( s:sub(1, 4),  16 )
+  local n2 = tonumber( s:sub(7, 10), 16 )
+   -- Surrogate pair?
+  if n2 then
+    return codepoint_to_utf8((n1 - 0xd800) * 0x400 + (n2 - 0xdc00) + 0x10000)
+  else
+    return codepoint_to_utf8(n1)
+  end
+end
+
+
+local function parse_string(str, i)
+  local res = ""
+  local j = i + 1
+  local k = j
+
+  while j <= #str do
+    local x = str:byte(j)
+
+    if x < 32 then
+      decode_error(str, j, "control character in string")
+
+    elseif x == 92 then -- `\`: Escape
+      res = res .. str:sub(k, j - 1)
+      j = j + 1
+      local c = str:sub(j, j)
+      if c == "u" then
+        local hex = str:match("^[dD][89aAbB]%x%x\\u%x%x%x%x", j + 1)
+                 or str:match("^%x%x%x%x", j + 1)
+                 or decode_error(str, j - 1, "invalid unicode escape in string")
+        res = res .. parse_unicode_escape(hex)
+        j = j + #hex
+      else
+        if not escape_chars[c] then
+          decode_error(str, j - 1, "invalid escape char '" .. c .. "' in string")
+        end
+        res = res .. escape_char_map_inv[c]
+      end
+      k = j + 1
+
+    elseif x == 34 then -- `"`: End of string
+      res = res .. str:sub(k, j - 1)
+      return res, j + 1
+    end
+
+    j = j + 1
+  end
+
+  decode_error(str, i, "expected closing quote for string")
+end
+
+
+local function parse_number(str, i)
+  local x = next_char(str, i, delim_chars)
+  local s = str:sub(i, x - 1)
+  local n = tonumber(s)
+  if not n then
+    decode_error(str, i, "invalid number '" .. s .. "'")
+  end
+  return n, x
+end
+
+
+local function parse_literal(str, i)
+  local x = next_char(str, i, delim_chars)
+  local word = str:sub(i, x - 1)
+  if not literals[word] then
+    decode_error(str, i, "invalid literal '" .. word .. "'")
+  end
+  return literal_map[word], x
+end
+
+
+local function parse_array(str, i)
+  local res = {}
+  local n = 1
+  i = i + 1
+  while 1 do
+    local x
+    i = next_char(str, i, space_chars, true)
+    -- Empty / end of array?
+    if str:sub(i, i) == "]" then
+      i = i + 1
+      break
+    end
+    -- Read token
+    x, i = parse(str, i)
+    res[n] = x
+    n = n + 1
+    -- Next token
+    i = next_char(str, i, space_chars, true)
+    local chr = str:sub(i, i)
+    i = i + 1
+    if chr == "]" then break end
+    if chr ~= "," then decode_error(str, i, "expected ']' or ','") end
+  end
+  return res, i
+end
+
+
+local function parse_object(str, i)
+  local res = {}
+  i = i + 1
+  while 1 do
+    local key, val
+    i = next_char(str, i, space_chars, true)
+    -- Empty / end of object?
+    if str:sub(i, i) == "}" then
+      i = i + 1
+      break
+    end
+    -- Read key
+    if str:sub(i, i) ~= '"' then
+      decode_error(str, i, "expected string for key")
+    end
+    key, i = parse(str, i)
+    -- Read ':' delimiter
+    i = next_char(str, i, space_chars, true)
+    if str:sub(i, i) ~= ":" then
+      decode_error(str, i, "expected ':' after key")
+    end
+    i = next_char(str, i + 1, space_chars, true)
+    -- Read value
+    val, i = parse(str, i)
+    -- Set
+    res[key] = val
+    -- Next token
+    i = next_char(str, i, space_chars, true)
+    local chr = str:sub(i, i)
+    i = i + 1
+    if chr == "}" then break end
+    if chr ~= "," then decode_error(str, i, "expected '}' or ','") end
+  end
+  return res, i
+end
+
+
+local char_func_map = {
+  [ '"' ] = parse_string,
+  [ "0" ] = parse_number,
+  [ "1" ] = parse_number,
+  [ "2" ] = parse_number,
+  [ "3" ] = parse_number,
+  [ "4" ] = parse_number,
+  [ "5" ] = parse_number,
+  [ "6" ] = parse_number,
+  [ "7" ] = parse_number,
+  [ "8" ] = parse_number,
+  [ "9" ] = parse_number,
+  [ "-" ] = parse_number,
+  [ "t" ] = parse_literal,
+  [ "f" ] = parse_literal,
+  [ "n" ] = parse_literal,
+  [ "[" ] = parse_array,
+  [ "{" ] = parse_object,
+}
+
+
+parse = function(str, idx)
+  local chr = str:sub(idx, idx)
+  local f = char_func_map[chr]
+  if f then
+    return f(str, idx)
+  end
+  decode_error(str, idx, "unexpected character '" .. chr .. "'")
+end
+
+
+function json.decode(str)
+  if type(str) ~= "string" then
+    error("expected argument of type string, got " .. type(str))
+  end
+  local res, idx = parse(str, next_char(str, 1, space_chars, true))
+  idx = next_char(str, idx, space_chars, true)
+  if idx <= #str then
+    decode_error(str, idx, "trailing garbage")
+  end
+  return res
+end
+
+
+return json end)
+util.keep_running()
+util.require_natives("1676318796")
+json = require "src.lib.external.json"
+polyglotUtils = require "src.lib.utils"
+LOC = require "src.lib.localization"
+
+require "src.lib.menus"
