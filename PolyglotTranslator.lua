@@ -1,13 +1,14 @@
 --[[ --- START OF VERSION ---
 MAJOR:1
-MINOR:3
-PATCH:2
+MINOR:5
+PATCH:0
 CHANGELOG
-- Fixed "Attempt to yield across a C-call boundary" error caused in bugs of ScaleformLib, now this library is no longer needed.
-- Fixed bugs in loading script, which causes settings to revert to default.
-- Fixed failure to load custom colors for message rendering.
-- Added Polyglot Popup as another presentation mode for message, which is still under development to draw DirectX for input and presentation.
-- Added Russian language support for localization.
+- Fixed broken ChatGPT translation method.
+- Added new ChatGPT templates.
+- Changed in input method of sending outgoing messages, now using the native interface of GTA instead of the commandbox.
+- You can now send private translated messages to specific player. You can find the button in Players tab. Private messages looks like `[To <PlayerName>] <TranslatedMessage>`.
+- Refactoring and code cleanup.
+
 --- END OF VERSION --- ]]
 
 -- LEGACY
@@ -90,6 +91,17 @@ end
 function moduleExports.isJSON(text)
     local jsonStr = text:match("(%b{})")
     return jsonStr ~= nil
+end
+
+---@param windowName string #Must be a label
+---@param maxInput integer
+---@param defaultText string
+---@return string
+function moduleExports.get_input_from_screen_keyboard(windowName, maxInput, defaultText)
+    MISC.DISPLAY_ONSCREEN_KEYBOARD(0, windowName, "", defaultText, "", "", "", maxInput);
+    while MISC.UPDATE_ONSCREEN_KEYBOARD() == 0 do util.yield_once() end
+    if MISC.UPDATE_ONSCREEN_KEYBOARD() == 1 then return MISC.GET_ONSCREEN_KEYBOARD_RESULT() end
+    return ""
 end
 
 return moduleExports
@@ -455,14 +467,17 @@ end
 
 ChatGPTPromptPresets = {
     ["Basic"] = "Translate the following message to {{lang}} in a natural and Internet style.",
-    ["Cute with Emoticons"] = "You are a professional translation engine, please translate the following text into {{lang}}, in the style of game message scenario with cute emoticons, Internet slang and without the style of machine translation.",
+    ["Cute with Emoticons"] = "Please translate the following text into {{lang}}, in the style of game message scenario with one emoticon at the end of message, be natural and without the feeling of machine translation. Context is related to Grand Theft Auto OL. Use simple emoticons containing ASCII letters like parentheses and quotation marks.",
+    ["Add Emoticon At End"] = "Please add one cute emoticon(Kaomoji) at the end of message, according to the mood and emotion of message. Do not modify the words.",
     ["Model Roleplay"] = "You are a translation model. Please translate the following text to {{lang}}.",
     ["AI Self-aware"] = "As an AI language model, please convert the following text to {{lang}}."
 }
 
 ChatGPTPromptPresetsOptions = {}
-for name, preset in pairs(ChatGPTPromptPresets) do ChatGPTPromptPresetsOptions[#ChatGPTPromptPresetsOptions + 1] =
-    {name} end
+for k, v in pairs(ChatGPTPromptPresets) do
+    table.insert(ChatGPTPromptPresetsOptions, k)
+end
+
 
 local function googleTranslateCall(text, targetLang, onSuccess)
     local HEADERS = {
@@ -532,8 +547,14 @@ local function chatGPTTranslateCall(text, targetLang, onSuccess)
             polyglotUtils.debugLog("ChatGPT response content: " .. responseContent)
             if polyglotUtils.isJSON(responseContent) then
                 local translation = polyglotUtils.extractJSON(responseContent).translations[1]
+                local translatedMessage = translation.t
+                translatedMessage = translatedMessage:gsub("\\u0026", "&")
+                translatedMessage = translatedMessage:gsub("\\\"", "\"")
+                translatedMessage = translatedMessage:gsub("\\\\", "\\")
+                translatedMessage = translatedMessage:gsub("~", " ")
+                translatedMessage = translatedMessage:match("^%s*(.-)%s*$") -- Remove heading and trailing spaces
                 local sourceLang = LangLookupByName[translation.s]
-                onSuccess(translation.t, sourceLang or "en")
+                onSuccess(translatedMessage, sourceLang or "en")
             else
                 polyglotUtils.toast("The API returned a natural language response: " .. responseContent)
             end
@@ -553,8 +574,12 @@ local translationMethods = {
     ["ChatGPT"] = chatGPTTranslateCall
 }
 
-TranslationMethodOptions = {}
-for method, _ in pairs(translationMethods) do table.insert(TranslationMethodOptions, {method}) end
+TranslationMethodOptions = {
+    "Google Translate",
+    -- "Bing",
+    "ChatGPT"
+}
+
 
 function moduleExports.translateText(text, targetLang, translationMethod, onSuccess)
     if translationMethods[translationMethod] then
@@ -587,18 +612,17 @@ local scaleformTypes = {
 }
 
 local checkScaleformAndLoad = function(scaleformName)
-    if not scaleformHandleTable[scaleformName] or not GRAPHICS.HAS_SCALEFORM_MOVIE_LOADED(scaleformHandleTable[scaleformName]) then
+    if not scaleformHandleTable[scaleformName] or
+        not GRAPHICS.HAS_SCALEFORM_MOVIE_LOADED(scaleformHandleTable[scaleformName]) then
         local scaleformHandle = GRAPHICS.REQUEST_SCALEFORM_MOVIE(scaleformName)
-        while not GRAPHICS.HAS_SCALEFORM_MOVIE_LOADED(scaleformHandle) do
-            util.yield()
-        end
+        while not GRAPHICS.HAS_SCALEFORM_MOVIE_LOADED(scaleformHandle) do util.yield() end
         scaleformHandleTable[scaleformName] = scaleformHandle
         GRAPHICS.DRAW_SCALEFORM_MOVIE_FULLSCREEN(scaleformHandle, 255, 255, 255, 255, 1)
     end
 end
 
 local function callScaleformMethod(scaleformName, method, ...)
-    local args = { ... }
+    local args = {...}
     checkScaleformAndLoad(scaleformName)
     if GRAPHICS.BEGIN_SCALEFORM_MOVIE_METHOD(scaleformHandleTable[scaleformName], method) then
         for i = 1, #args do
@@ -620,41 +644,59 @@ end
 ---@param scope string
 ---@param teamOnly boolean
 ---@param eHudColour number
-local function drawScaleformMultiplayerChat(player, message, scope, teamOnly, eHudColour)    
+local function drawScaleformMultiplayerChat(player, message, scope, teamOnly, eHudColour)
     callScaleformMethod("MULTIPLAYER_CHAT", "ADD_MESSAGE", player, message, scope, teamOnly, eHudColour)
 end
 
 local moduleExports = {}
 
 local colors = {
-    topbar = { ["r"] = 50 / 255, ["g"] = 50 / 255, ["b"] = 50 / 255, ["a"] = 1.0 },       --grayish
-    background = { ["r"] = 5 / 255, ["g"] = 5 / 255, ["b"] = 5 / 255, ["a"] = 0.5 },      --blackish
-    subhead = { ["r"] = 1, ["g"] = 1, ["b"] = 1, ["a"] = 1.0 },                           --white
-    label = { ["r"] = 1, ["g"] = 1, ["b"] = 1, ["a"] = 1.0 },                             --white
-    highlight = { ["r"] = 160 / 255, ["g"] = 160 / 255, ["b"] = 160 / 255, ["a"] = 1.0 }, -- also grayish
+    topbar = {
+        ["r"] = 50 / 255,
+        ["g"] = 50 / 255,
+        ["b"] = 50 / 255,
+        ["a"] = 1.0
+    }, -- grayish
+    background = {
+        ["r"] = 5 / 255,
+        ["g"] = 5 / 255,
+        ["b"] = 5 / 255,
+        ["a"] = 0.5
+    }, -- blackish
+    subhead = {
+        ["r"] = 1,
+        ["g"] = 1,
+        ["b"] = 1,
+        ["a"] = 1.0
+    }, -- white
+    label = {
+        ["r"] = 1,
+        ["g"] = 1,
+        ["b"] = 1,
+        ["a"] = 1.0
+    }, -- white
+    highlight = {
+        ["r"] = 160 / 255,
+        ["g"] = 160 / 255,
+        ["b"] = 160 / 255,
+        ["a"] = 1.0
+    } -- also grayish
 }
 
 TranslatedMsgLocationOptions = {
-    LOC.translatedMsgLocationOptions.teamChatNotNetworked,
-    LOC.translatedMsgLocationOptions.teamChatNetworked,
-    LOC.translatedMsgLocationOptions.globalChatNotNetworked,
-    LOC.translatedMsgLocationOptions.globalChatNetworked,
-    LOC.translatedMsgLocationOptions.notification,
-    LOC.translatedMsgLocationOptions.popup
-}
-
+    LOC.translatedMsgLocationOptions.teamChatNotNetworked, LOC.translatedMsgLocationOptions.teamChatNetworked,
+    LOC.translatedMsgLocationOptions.globalChatNotNetworked, LOC.translatedMsgLocationOptions.globalChatNetworked,
+    LOC.translatedMsgLocationOptions.notification, LOC.translatedMsgLocationOptions.popup}
 
 local messages = {}
 local display_duration = 3000 -- Time in ms to display each message
-local max_messages = 5        -- Maximum number of messages to display at a time
+local max_messages = 5 -- Maximum number of messages to display at a time
 
 local function calculate_max_scale(text, max_width)
     local text_width, _ = directx.get_text_size(text)
     local scale = 1.0
 
-    if text_width > max_width then
-        scale = max_width / text_width
-    end
+    if text_width > max_width then scale = max_width / text_width end
 
     return scale
 end
@@ -666,9 +708,7 @@ local function wrap_text(text, width)
     local line = ""
     local line_width
 
-    for word in text:gmatch("%S+") do
-        table.insert(words, word)
-    end
+    for word in text:gmatch("%S+") do table.insert(words, word) end
 
     for i, word in ipairs(words) do
         if line == "" then
@@ -683,9 +723,7 @@ local function wrap_text(text, width)
             end
         end
 
-        if i == #words then
-            table.insert(lines, line)
-        end
+        if i == #words then table.insert(lines, line) end
     end
 
     return lines
@@ -697,13 +735,16 @@ local function display_popup(sender, message, src_language)
         sender = sender,
         message = message,
         src_language = src_language,
-        banner_color = { r = math.random(), g = math.random(), b = math.random(), a = 1.0 },
+        banner_color = {
+            r = math.random(),
+            g = math.random(),
+            b = math.random(),
+            a = 1.0
+        },
         start_time = current_time
     })
 
-    if #messages > max_messages then
-        table.remove(messages, 1)
-    end
+    if #messages > max_messages then table.remove(messages, 1) end
 end
 
 util.create_tick_handler(function()
@@ -744,13 +785,10 @@ util.create_tick_handler(function()
     end
 end)
 
-
 local botSend = false -- To avoid infinite loop
 function moduleExports.createOnMessageCallback(translateTextCB)
     return function(sender, reserved, text, team_chat, networked, is_auto)
-        if not Config.translateOn then
-            return
-        end
+        if not Config.translateOn then return end
         if not botSend then
             if not Config.translateSelf and (sender == players.user()) then
                 return
@@ -767,9 +805,7 @@ function moduleExports.createOnMessageCallback(translateTextCB)
                         local teamChatLabel = Config.teamChatLabel
                         ---@type string
                         local allChatLabel = Config.allChatLabel
-                        if Config.blacklistedLanguages[sourceLang] == true then
-                            return
-                        end
+                        if Config.blacklistedLanguages[sourceLang] == true then return end
                         -- "Team Chat not networked", "Team Chat networked", "Global Chat not networked", "Global Chat networked", "Notification"
                         if (translatedMsgLocation == 1) then
                             drawScaleformMultiplayerChat(senderName, resultText, teamChatLabel, false, colorFinal)
@@ -811,6 +847,16 @@ function moduleExports.sendMessage(myText, translateTextCB)
             -- end
             -- void chat.send_message(string text, bool team_chat, bool add_to_local_history, bool networked)
             chat.send_message(translation, false, true, true)
+            polyglotUtils.debugLog("Message sent: " .. translation)
+        end)
+end
+
+function moduleExports.sendPrivateMessage(myText, pid, translateTextCB)
+    translateTextCB(myText, Config.targetLanguageOutgoing, Config.translationMethodOutgoing,
+        function(translation, sourceLang)
+            local msg = polyglotUtils.templateReplace(LOC.sendingToPlayerLookupByKey[Config.targetLanguageOutgoing], players.get_name(pid)) .. translation
+            chat.send_targeted_message(pid, players.user(), msg, true)
+            chat.send_message(msg, true, true, false)
             polyglotUtils.debugLog("Message sent: " .. translation)
         end)
 end
@@ -886,7 +932,6 @@ local engTranslations = {
 	targetLanguageOutgoingD = "Language to translate your messages to. You need to click to apply change",
 	sendMessage = "Send Message",
 	sendMessageD = "Input the text for your message",
-	inputMessage = "Please input your message",
 	translatedMsgLocationOptions = {
 		teamChatNotNetworked = "Team Chat not networked",
 		teamChatNetworked = "Team Chat networked",
@@ -906,7 +951,12 @@ local engTranslations = {
 		customLabelForTeamTranslation = "Custom Label For [{arg1}] Translation",
 		customLabelForAllTranslation = "Custom Label For [{arg1}] Translation",
 		translationMethodIncomingChangedTo = "Translation Method Incoming changed to {arg1}",
-		translationMethodOutgoingChangedTo = "Translation Method Outgoing changed to {arg1}"
+		translationMethodOutgoingChangedTo = "Translation Method Outgoing changed to {arg1}",
+		sendingToPlayer = "[To {arg1}] "
+	},
+
+	CustomLabels ={
+		inputMessage = "Please input your message",
 	}
 }
 local esTranslations  = {
@@ -965,7 +1015,6 @@ local esTranslations  = {
 	targetLanguageOutgoingD = "Idioma para traducir sus mensajes. Debe hacer clic para aplicar el cambio",
 	sendMessage = "Enviar mensaje",
 	sendMessageD = "Ingrese el texto para su mensaje",
-	inputMessage = "Por favor ingrese su mensaje",
 	translatedMsgLocationOptions = {
 		teamChatNotNetworked = "Chat de equipo no conectado en red",
 		teamChatNetworked = "Chat de equipo conectado en red",
@@ -985,7 +1034,12 @@ local esTranslations  = {
 		customLabelForTeamTranslation = "Etiqueta personalizada para la traducción de [{arg1}]",
 		customLabelForAllTranslation = "Etiqueta personalizada para la traducción de [{arg1}]",
 		translationMethodIncomingChangedTo = "Método de traducción entrante cambiado a {arg1}",
-		translationMethodOutgoingChangedTo = "Método de traducción saliente cambiado a {arg1}"
+		translationMethodOutgoingChangedTo = "Método de traducción saliente cambiado a {arg1}",
+		sendingToPlayer = "[A {arg1}] "
+	},
+
+	CustomLabels ={
+		inputMessage = "Ingrese el mensaje",
 	}
 }
 
@@ -1046,7 +1100,6 @@ local frTranslations  = {
 	targetLanguageOutgoingD = "Langue pour traduire vos messages. Vous devez cliquer pour appliquer le changement",
 	sendMessage = "Envoyer le message",
 	sendMessageD = "Saisissez le texte de votre message",
-	inputMessage = "Veuillez saisir votre message",
 	translatedMsgLocationOptions = {
 		teamChatNotNetworked = "Chat d'équipe non connecté",
 		teamChatNetworked = "Chat d'équipe connecté",
@@ -1066,7 +1119,11 @@ local frTranslations  = {
 		customLabelForTeamTranslation = "Étiquette personnalisée pour la traduction [{arg1}]",
 		customLabelForAllTranslation = "Étiquette personnalisée pour la traduction [{arg1}]",
 		translationMethodIncomingChangedTo = "Méthode de traduction entrante modifiée en {arg1}",
-		translationMethodOutgoingChangedTo = "Méthode de traduction sortante modifiée en {arg1}"
+		translationMethodOutgoingChangedTo = "Méthode de traduction sortante modifiée en {arg1}",
+		sendingToPlayer = "[À {arg1}] "
+	},
+	CustomLabels ={
+		inputMessage = "Entrez le message",
 	}
 }
 
@@ -1126,7 +1183,6 @@ local zhTranslations  = {
 	targetLanguageOutgoingD = "您发送的消息的最终语言。您需要点击以应用更改",
 	sendMessage = "发送消息",
 	sendMessageD = "输入您要发送的消息文本",
-	inputMessage = "请输入您的消息",
 	translatedMsgLocationOptions = {
 		teamChatNotNetworked = "团队聊天未联网",
 		teamChatNetworked = "团队聊天已联网",
@@ -1146,7 +1202,11 @@ local zhTranslations  = {
 		customLabelForTeamTranslation = "自定义 [{arg1}] 翻译标签",
 		customLabelForAllTranslation = "自定义 [{arg1}] 翻译标签",
 		translationMethodIncomingChangedTo = "传入消息的翻译方法更改为 {arg1}",
-		translationMethodOutgoingChangedTo = "发出消息的翻译方法更改为 {arg1}"
+		translationMethodOutgoingChangedTo = "发出消息的翻译方法更改为 {arg1}",
+		sendingToPlayer = "[发送给 {arg1}] "
+	},
+	CustomLabels ={
+		inputMessage = "输入待发送的消息",
 	}
 }
 
@@ -1206,7 +1266,6 @@ local jaTranslations  = {
 	targetLanguageOutgoingD = "あなたのメッセージを翻訳する言語。変更を適用するにはクリックする必要があります",
 	sendMessage = "メッセージを送信",
 	sendMessageD = "メッセージのテキストを入力してください",
-	inputMessage = "メッセージを入力してください",
 	translatedMsgLocationOptions = {
 		teamChatNotNetworked = "ネットワーク化されていないチームチャット",
 		teamChatNetworked = "ネットワーク化されたチームチャット",
@@ -1224,7 +1283,11 @@ local jaTranslations  = {
 		chatGPTPromptChangedTo = "ChatGPTプロンプトプリセットが{arg1}に変更されました",
 		selectedColor = "選択された色：{arg1}",
 		customLabelForTeamTranslation = "[{arg1}]翻訳のカスタムラベル",
-		customLabelForAllTranslation = "[{arg1}]翻訳のカスタムラベル"
+		customLabelForAllTranslation = "[{arg1}]翻訳のカスタムラベル",
+		sendingToPlayer = "[{arg1}に宛てて] "
+	},
+	CustomLabels ={
+		inputMessage = "入力メッセージ",
 	}
 }
 
@@ -1284,7 +1347,6 @@ local ruTranslations = {
 	targetLanguageOutgoingD = "Язык, на который будут переводиться ваши сообщения. Вам нужно нажать кнопку , чтобы применить изменения",
 	sendMessage = "Отправить сообщение",
 	sendMessageD = "Введите текст сообщения",
-	inputMessage = "Пожалуйста введите сообщение",
 	translatedMsgLocationOptions = {
 		teamChatNotNetworked = "Чат организации (сеть без подключения)",
 		teamChatNetworked = "Чат организации (сеть)",
@@ -1304,7 +1366,11 @@ local ruTranslations = {
 		customLabelForTeamTranslation = "Пользовательская метка для [{arg1}] перевода",
 		customLabelForAllTranslation = "Пользовательская метка для [{arg1}] перевода",
 		translationMethodIncomingChangedTo = "Метод входящего перевода изменён на  {arg1}",
-		translationMethodOutgoingChangedTo = "Метод исходящего перевода изменён на {arg1}"
+		translationMethodOutgoingChangedTo = "Метод исходящего перевода изменён на {arg1}",
+		sendingToPlayer = "[К {arg1}] "
+	},
+	CustomLabels ={
+		inputMessage = "Введите сообщение",
 	}
 }
 
@@ -1328,12 +1394,93 @@ function merge(t1, t2)
 	return t1
 end
 
+local returnTable = {}
+
 if table.contains(languages, lang.get_current()) then
-	return merge(translations.en, translations[lang.get_current()])
+	returnTable =  merge(translations.en, translations[lang.get_current()])
 else
-	return translations.en
+	returnTable = translations.en
 end
- end)
+
+local sendingToPlayerTranslations = {
+    af = "[Aan {arg1}] ",
+    sq = "[Për {arg1}] ",
+    ar = "[إلى {arg1}] ",
+    az = "[{arg1} üçün] ",
+    eu = "[{arg1}-(r)i] ",
+    be = "[Да {arg1}] ",
+    bn = "[{arg1} প্রতি] ",
+    bg = "[До {arg1}] ",
+    ca = "[A {arg1}] ",
+    ["zh-cn"] = "[发送给 {arg1}] ",
+    ["zh-tw"] = "[發送給 {arg1}] ",
+    hr = "[Za {arg1}] ",
+    cs = "[Pro {arg1}] ",
+    da = "[Til {arg1}] ",
+    nl = "[Aan {arg1}] ",
+    en = "[To {arg1}] ",
+    eo = "[Al {arg1}] ",
+    et = "[{arg1}-le] ",
+    tl = "[Para kay {arg1}] ",
+    fi = "[{arg1}:lle] ",
+    fr = "[À {arg1}] ",
+    gl = "[A {arg1}] ",
+    ka = "[{arg1}მიმართავი] ",
+    de = "[An {arg1}] ",
+    el = "[Προς {arg1}] ",
+    gu = "[{arg1} પ્રતિ] ",
+    ht = "[Pou {arg1}] ",
+    iw = "[אל {arg1}] ",
+    hi = "[{arg1} को] ",
+    hu = "[{arg1} részére] ",
+    is = "[Til {arg1}] ",
+    id = "[Kepada {arg1}] ",
+    ga = "[Chuig {arg1}] ",
+    it = "[A {arg1}] ",
+    ja = "[{arg1}に宛てて] ",
+    kn = "[{arg1} ಗೆ] ",
+    ko = "[{arg1}에게] ",
+    la = "[Ad {arg1}] ",
+    lv = "[{arg1} vērsts] ",
+    lt = "[{arg1} kam] ",
+    mk = "[До {arg1}] ",
+    ms = "[Kepada {arg1}] ",
+    mt = "[Lil {arg1}] ",
+    no = "[Til {arg1}] ",
+    fa = "[به {arg1}] ",
+    pl = "[Do {arg1}] ",
+    pt = "[Para {arg1}] ",
+    ro = "[Către {arg1}] ",
+    ru = "[К {arg1}] ",
+    sr = "[За {arg1}] ",
+    sk = "[Pre {arg1}] ",
+    sl = "[Za {arg1}] ",
+    es = "[A {arg1}] ",
+    sw = "[Kwa {arg1}] ",
+    sv = "[Till {arg1}] ",
+    ta = "[{arg1} க்கு] ",
+    te = "[{arg1} కు] ",
+    th = "[ถึง {arg1}] ",
+    tr = "[{arg1} için] ",
+    uk = "[До {arg1}] ",
+    ur = "[{arg1} کے لئے] ",
+    vi = "[Đến {arg1}] ",
+    cy = "[I {arg1}] ",
+    yi = "[צו {arg1}] "
+}
+
+returnTable.sendingToPlayerLookupByKey = sendingToPlayerTranslations
+
+-----------------------------------
+-- LABELS
+-----------------------------------	
+CustomLabels = {
+    InputMessage = returnTable.CustomLabels.inputMessage
+}
+
+for key, text in pairs(CustomLabels) do CustomLabels[key] = util.register_label(text) end
+
+return returnTable end)
 package.preload['src.lib.menus'] = (function (...)
 					local _ENV = _ENV;
 					local function module(name, ...)
@@ -1475,7 +1622,7 @@ end
 
 local translationMethodMenu = menu.list(menu.my_root(), LOC.translationMethod, {}, LOC.translationMethodD)
 
-translationMethodMenu:list_select(LOC.incomingMessages, {}, LOC.incomingMessagesD, TranslationMethodOptions, 1,
+menu.list_select(translationMethodMenu, LOC.incomingMessages, {}, LOC.incomingMessagesD, TranslationMethodOptions, 1,
     function(index, option, prevIndex, clickType)
         polyglotUtils.toast(LOC.templates.translationMethodIncomingChangedTo, option)
         Config.translationMethodIncoming = option
@@ -1497,11 +1644,14 @@ translateMyMsg:list_select(LOC.targetLanguageOutgoing, {"outlang"}, LOC.targetLa
     function(index, option, prevIndex, clickType) Config.targetLanguageOutgoing = LangLookupByName[option] end)
 
 translateMyMsg:action(LOC.sendMessage, {"Sendmessage"}, LOC.sendMessageD, function(on_click)
-    polyglotUtils.toast(LOC.inputMessage)
-    menu.show_command_box("Sendmessage ")
-end, function(on_command)
-    local myText = on_command
-    polyglotChat.sendMessage(myText, polyglotTranslation.translateText)
+    -- polyglotUtils.toast(LOC.inputMessage)
+    -- menu.show_command_box("Sendmessage ")
+    local text = polyglotUtils.get_input_from_screen_keyboard(CustomLabels.InputMessage, 100, "")
+    if text == "" then return end
+    polyglotChat.sendMessage(text, polyglotTranslation.translateText)
+    -- , function(on_command)
+    --     local myText = on_command
+    --     polyglotChat.sendMessage(myText, polyglotTranslation.translateText)
 end)
 -- int chat.on_message(function callback)
 --     Registers a function to be called when a chat message is sent:
@@ -1541,6 +1691,23 @@ chatGPTSettingsMenu:slider_float(LOC.frequencyPenalty, {}, LOC.frequencyPenaltyD
 
 -- CommandRef|CommandUniqPtr menu.toggle(CommandRef parent, Label menu_name, table<any, string> command_names, Label help_text, function on_change, bool default_on = false)
 menu.my_root():toggle("Debug Mode", {}, "", function(on) Config.debugMode = on end, false)
+
+---@param pId integer
+local networkPlayerMenuPopulate = function(pId)
+    menu.divider(menu.player_root(pId), SCRIPT_NAME)
+
+    menu.action(menu.player_root(pId), LOC.sendMessage, {}, LOC.sendMessageD, function(on_click)
+        local text = polyglotUtils.get_input_from_screen_keyboard(CustomLabels.InputMessage, 100, "")
+        if text == "" then return end
+        polyglotChat.sendPrivateMessage(text, pId, polyglotTranslation.translateText)
+        -- , function(on_command)
+        --     local myText = on_command
+        --     polyglotChat.sendMessage(myText, polyglotTranslation.translateText)
+    end)
+    -- TODO auto detect player language as target language
+end
+players.on_join(networkPlayerMenuPopulate)
+players.dispatch_on_join()
  end)
 package.preload['src.lib.external.json'] = (function (...)
 					local _ENV = _ENV;
