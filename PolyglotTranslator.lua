@@ -1,7 +1,7 @@
 --[[ --- START OF VERSION ---
 MAJOR:1
 MINOR:5
-PATCH:1
+PATCH:2
 CHANGELOG
 - Fixed broken ChatGPT translation method.
 - Fixed broken restoring of translation method upon script startup.
@@ -11,6 +11,7 @@ CHANGELOG
 - Refactoring and code cleanup.
 - Added Portuguese localization.
 - Credits to all contributors.
+- Added `Block Untranslated Messages` option
 --- END OF VERSION --- ]]
 
 -- LEGACY
@@ -586,7 +587,13 @@ TranslationMethodOptions = {
 function moduleExports.translateText(text, targetLang, translationMethod, onSuccess)
     if translationMethods[translationMethod] then
         translationMethods[translationMethod](text, targetLang, function(translation, sourceLang)
-            onSuccess(translation, sourceLang:lower())
+            if (Config.blockUntranslatedMessages) then
+                if translation ~= text then
+                    onSuccess(translation, sourceLang:lower())
+                end
+            else
+                onSuccess(translation, sourceLang:lower())
+            end
         end)
     end
 end
@@ -910,6 +917,8 @@ local engTranslations = {
     translateYourselfD = "Translate messages sent by yourself",
     translatedMessageDisplay = "Translated Message Display",
     translatedMessageDisplayD = "Location of translated Message. You need to click to apply change",
+    blockUntranslatedMessages = "Block Untranslated Messages",
+    blockUntranslatedMessagesD = "Only show messages where the translated text is different from the original",
     scriptSettings = "Other Settings For Polyglot Translator",
     scriptSettingsD = "Including color settings and updates",
     playerNameColor = "Player Name Color",
@@ -1568,6 +1577,7 @@ Config = {
 
     translateOn = true,
     translateSelf = false,
+    blockUntranslatedMessages = false,
 
     translatedMsgLocation = 5,
 
@@ -1597,6 +1607,9 @@ menu.toggle(menu.my_root(), LOC.translateYourself, {"translateself"}, LOC.transl
 menu.my_root():list_select(LOC.translatedMessageDisplay, {}, LOC.translatedMessageDisplayD,
     TranslatedMsgLocationOptions, #TranslatedMsgLocationOptions,
     function(index, option, prevIndex, clickType) Config.translatedMsgLocation = index end)
+
+menu.my_root():toggle(LOC.blockUntranslatedMessages, {}, LOC.blockUntranslatedMessagesD,
+    function(on) Config.blockUntranslatedMessages = on end)
 
 -- CommandRef|CommandUniqPtr menu.list(CommandRef parent, Label menu_name, table<any, string> command_names = {}, Label help_text = "", ?function on_click = nil, ?function on_back = nil, ?function on_active_list_update = nil)
 local settingTranslationMenu = menu.list(menu.my_root(), LOC.scriptSettings, {}, LOC.scriptSettingsD)
